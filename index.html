@@ -44,8 +44,13 @@
                                 <input type="search" id="essay-search-input" placeholder="Search essays...">
                                 <button id="essay-search-prev" class="search-nav-button" aria-label="Previous match" title="Previous match">↑</button>
                                 <button id="essay-search-next" class="search-nav-button" aria-label="Next match" title="Next match">↓</button>
-                                <button id="essay-search-toggle" aria-label="Search essays">
+                                <!-- Search Icon Toggle (Initially Visible) -->
+                                <button id="essay-search-open-toggle" class="search-toggle-button" aria-label="Open search">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                </button>
+                                <!-- Close Icon Toggle (Initially Hidden) -->
+                                <button id="essay-search-close-toggle" class="search-toggle-button" aria-label="Close search">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                 </button>
                             </div>
                             <!-- ESSAY ENTRIES START HERE: ADD NEWEST ENTRIES AT THE TOP -->
@@ -80,76 +85,6 @@
 
                             <!-- ... all other existing entries in reverse chronological order ... -->
                             
-                            <div class="essay-entry"> <!-- Existing Entry: 2 October 2024 -->
-                                <h3 class="essay-date">2 October 2024</h3>
-                                <div class="essay-text">
-                                    <p>I'm done with it</p>
-                                    <p>I am the dream man i am talking about, to be a CEO you need to think,act,behave like a CEO.</p>
-                                    <p>Problem is, I'm blessed with the perfect opposite college to build all this!. I can't do anything until i get a job, or atleast get the offer in my hand and this is burning the shit out of me, i'm legit furious about this. I know what to do and how to do it but I can't do it and that's the worst feeling ever.</p>
-                                    <p>Currently I'm just exploring my outlook, i know the watch i'm gonna be wearing until the next change (Casio) and what clothing (Souled Store Colour Block). Just 10 more months Om, and i'll be in the Zone to grind some real shit on youtube and YAAS whatever i do.</p>
-                                    <p>Content Creation is going to get super fucking serious, no joke. The readers, just wait and watch</p>
-                                </div>
-                            </div>
-
-                            <div class="essay-entry"> <!-- Existing Entry: 16 September 2024 -->
-                                <h3 class="essay-date">16 September 2024</h3>
-                                <div class="essay-text">
-                                    <p>Building the Dream Man</p>
-                                    <p>I am the dream man i am talking about, to be a CEO you need to think,act,behave like a CEO.</p>
-                                    <p>Problem is, I'm blessed with the perfect opposite college to build all this!. I can't do anything until i get a job, or atleast get the offer in my hand and this is burning the shit out of me, i'm legit furious about this. I know what to do and how to do it but I can't do it and that's the worst feeling ever.</p>
-                                    <p>Currently I'm just exploring my outlook, i know the watch i'm gonna be wearing until the next change (Casio) and what clothing (Souled Store Colour Block). Just 10 more months Om, and i'll be in the Zone to grind some real shit on youtube and YAAS whatever i do.</p>
-                                    <p>Content Creation is going to get super fucking serious, no joke. The readers, just wait and watch</p>
-                                </div>
-                            </div>
-
-                            <div class="essay-entry"> <!-- Existing Entry: 14 September 2024 -->
-                                <h3 class="essay-date">14 September 2024</h3>
-                                <div class="essay-text">
-                                    <p>Proper Late night realisationsss, Holy crap i'm turning 20 next month!!!</p>
-                                    <p>Currently at home during the TechnoVIT leave and i just realise that I am turning 20 next month. Crazy feeling.</p>
-                                    <p>I have decided to make this the best year of my life, best acads, best outlook, best practices, best decisions. I'm gonna launch for sure for the last 4 months and it's happening.</p>
-                                    <p>The more i visit home i get introduced to the non college life, my college is just too simulated dude and i'm not at all a Fan of that.</p>
-                                    <p>Gotta finish 380 questions with revision this year, it's a goal and i gotta do it to test my dedication towards non-comforting things.</p>
-                                </div>
-                            </div>
-
-                            <div class="essay-entry"> <!-- Existing Entry: 1 September 2024 -->
-                                <h3 class="essay-date">1 September 2024</h3>
-                                <div class="essay-text">
-                                    <p>Switching to Gear 3</p>
-                                    <p>Cosistently did leetcode for entire August, got a medal letsss gooo. Feels good to have that on the platform. Now but its go time.</p>
-                                    <p>Churning Aptitude this month, going with a plan only. CAT 1 was fine, 3 subjects excellent while others were bad. So next time gotta prepare early for those.</p>
-                                    <p>Personal Life : Lot of hurdles in the way to even talk with a person, i mean Bruh its so freaking bullshit. But im "Ziddi", not gonna bend for all this</p>
-                                </div>
-                            </div>
-                            
-                            <div class="essay-entry"> <!-- Existing Entry: 19 August 2024 -->
-                                <h3 class="essay-date">19 August 2024</h3>
-                                <div class="essay-text">
-                                    <p>Man, Man, Man. Insane last few days.</p>
-                                    <p>I experienced almost single emotion in the last few days and i handled it so well, ngl i'm proud of myself for this. It was the first time for me to experience all this and come out of it.</p>
-                                    <p>Now its linear, im set on my goals and the trajectory for the next year. Good feeling</p>
-                                </div>
-                            </div>
-                            
-                            <div class="essay-entry"> <!-- Existing Entry: 4 August 2024 -->
-                                <h3 class="essay-date">4 August 2024</h3>
-                                <div class="essay-text">
-                                    <p>Woooooooooo I'm back to life. The outlook changed entirely</p>
-                                    <p>Every day feels so good demn, i have something to look after every day and my coding is also going at an amazing pace</p>
-                                    <p>I need to be perfect with current schedule, and my self-gift for birthday is a physique, so i'm taking GYM/DIET seriously now.</p>
-                                </div>
-                            </div>
-                            
-                            <div class="essay-entry"> <!-- Existing Entry: 31 July 2024 -->
-                                <h3 class="essay-date">31 July 2024</h3>
-                                <div class="essay-text">
-                                    <p>Last day of July Damn, i was low on active-energy mentally</p>
-                                    <p>Bruh i just go in deep thought and thinking while doing nothing, today is the last day i do that.</p>
-                                    <p>Going to work - switch - work without any expectations for a year now atleast</p>
-                                    <p>I gotta self-gift something on my birthday, what i don't know but i gotta do something I'll be proud of till my birthday</p>
-                                </div>
-                            </div>
                             
                             <div class="essay-entry"> <!-- Existing Entry: 15 July 2024 -->
                                 <h3 class="essay-date">15 July 2024</h3>
@@ -175,23 +110,6 @@
                                 </div>
                             </div>
                             
-                            <div class="essay-entry"> <!-- Existing Entry: 22 June 2024 -->
-                                <h3 class="essay-date">22 June 2024</h3>
-                                <div class="essay-text">
-                                    <p>Holy Crap! This video just beat my favourite Video ever</p>
-                                    <p>So the thing is this video, Click This is my favourite Video or maybe just like the favourite 5 minutes to spend on the internet no cap!!!!!!!!!. I mean it a lot. Now this Video, Click is dangerously close to it 😭.</p>
-                                    <p>I just got water in my eyes while watching it. Like it just made pause and listen to what he is saying & whatever he said is so trueee. Man love is so beautiful!</p>
-                                </div>
-                            </div>
-                            
-                            <div class="essay-entry"> <!-- Existing Entry: 16 June 2024 -->
-                                <h3 class="essay-date">16 June 2024</h3>
-                                <div class="essay-text">
-                                    <p>Going Intense, real hard</p>
-                                    <p>Tomorrow is a Monday, new Monday new Beginings. I got some goals for the same. Gotta finish the course entirely and gotta come to Stack now man, enough Arrays. Will keep low and do things but gonna go real hard. Thats for sure.</p>
-                                </div>
-                            </div>
-                            
                             <div class="essay-entry"> <!-- Existing Entry: 12 June 2024 -->
                                 <h3 class="essay-date">12 June 2024</h3>
                                 <div class="essay-text">
@@ -213,16 +131,6 @@
                                 </div>
                             </div>
                             
-                            <div class="essay-entry"> <!-- Existing Entry: 28 May 2024 -->
-                                <h3 class="essay-date">28 May 2024</h3>
-                                <div class="essay-text">
-                                    <p>Picking up pacee</p>
-                                    <p>As i go down the summer vacations, trying to do 3 to 4 new array type questions on my github repo and one on my leetcode profile. I just need to keep on doing progress daily that's the point.</p>
-                                    <p>Personal front its going amazing, I'm able to talk to my already existing friends better(😉) and efficiently.</p>
-                                    <p>Was thinking on starting a developmental project, will do in June tho!</p>
-                                </div>
-                            </div>
-                            
                             <div class="essay-entry"> <!-- Existing Entry: 20 May 2024 -->
                                 <h3 class="essay-date">20 May 2024</h3>
                                 <div class="essay-text">
@@ -239,15 +147,6 @@
                                     <p>More Work Less Time Good, Less Work More Time Bad</p>
                                     <p>I technically only have 3 modules to do, others i need not learn anything new, but still the procastination is decently high.</p>
                                     <p>Gotta start my work now. Edit: My Exam was amazing lets see how the results go now</p>
-                                </div>
-                            </div>
-                            
-                            <div class="essay-entry"> <!-- Existing Entry: 12 May 2024 -->
-                                <h3 class="essay-date">12 May 2024</h3>
-                                <div class="essay-text">
-                                    <p>I have Summer Vacations coming up</p>
-                                    <p>Getting a good chunk of 1.5 months to myself straight after 8th grade i assume. Have got tasks to do, refining my code proficinecy skills.</p>
-                                    <p>I don't even have a leetcode account yet and i am here doing Computer Science at College Funny enough, I'll create one on 20 May.</p>
                                 </div>
                             </div>
 

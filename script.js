@@ -120,34 +120,33 @@ function goToPrevMatch() {
 }
 
 function setupEssaySearch() {
-    const searchToggle = document.getElementById('essay-search-toggle');
+    const openToggle = document.getElementById('essay-search-open-toggle');
+    const closeToggle = document.getElementById('essay-search-close-toggle');
     const searchInput = document.getElementById('essay-search-input');
     const searchControls = document.querySelector('.essay-search-controls');
     const prevButton = document.getElementById('essay-search-prev');
     const nextButton = document.getElementById('essay-search-next');
 
-    if (searchToggle && searchInput && searchControls && prevButton && nextButton) {
-        searchToggle.addEventListener('click', () => {
-            searchControls.classList.toggle('active');
-            if (searchControls.classList.contains('active')) {
-                searchInput.focus();
-            }
+    if (openToggle && closeToggle && searchInput && searchControls && prevButton && nextButton) {
+        // Open Search
+        openToggle.addEventListener('click', () => {
+            searchControls.classList.add('active');
+            searchInput.focus();
         });
 
+        // Close Search
+        closeToggle.addEventListener('click', () => {
+            searchControls.classList.remove('active');
+            searchInput.value = ''; // Clear input
+            filterEssays(); // Reset filter (removes highlights, shows all)
+        });
+
+        // Filter on input
         searchInput.addEventListener('input', filterEssays);
 
-        // Add listeners for nav buttons
+        // Previous/Next Navigation
         prevButton.addEventListener('click', goToPrevMatch);
         nextButton.addEventListener('click', goToNextMatch);
-
-        // Optional: Close search if user clicks outside
-        document.addEventListener('click', (event) => {
-            if (!searchControls.contains(event.target) && searchControls.classList.contains('active')) {
-                if (event.target !== searchInput && event.target !== searchToggle && event.target !== prevButton && event.target !== nextButton) {
-                    searchControls.classList.remove('active');
-                }
-            }
-        });
     }
 }
 
