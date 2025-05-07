@@ -1,13 +1,43 @@
 // Add any JavaScript functionality here
+let clockInterval = null;
+
+function updateISTClock() {
+    const clockElement = document.getElementById('live-clock');
+    if (clockElement) {
+        const now = new Date();
+        const utcOffset = now.getTimezoneOffset() * 60000; // local offset in milliseconds
+        const istOffset = (5 * 60 + 30) * 60000; // IST offset in milliseconds (UTC+5:30)
+        const istTime = new Date(now.getTime() + utcOffset + istOffset);
+
+        const hours = istTime.getHours().toString().padStart(2, '0');
+        const minutes = istTime.getMinutes().toString().padStart(2, '0');
+        const seconds = istTime.getSeconds().toString().padStart(2, '0');
+        clockElement.textContent = `${hours}:${minutes}:${seconds} IST`;
+    }
+}
+
 function showPage(pageId) {
     const pages = document.querySelectorAll('.page');
     const next = document.getElementById('page-' + pageId);
-    // Remove .active from all pages immediately
     pages.forEach(page => page.classList.remove('active'));
-    // Add .active to the new page after a short delay for transition
+
+    // Clear previous clock interval if it exists
+    if (clockInterval) {
+        clearInterval(clockInterval);
+        clockInterval = null;
+        const clockElement = document.getElementById('live-clock');
+        if (clockElement) clockElement.textContent = ''; // Clear old time
+    }
+
     setTimeout(() => {
-        if (next) next.classList.add('active');
-    }, 20); // 1 frame delay to allow CSS transition to apply
+        if (next) {
+            next.classList.add('active');
+            if (pageId === 'contact') {
+                updateISTClock(); // Initial update
+                clockInterval = setInterval(updateISTClock, 1000); // Update every second
+            }
+        }
+    }, 20);
 }
 
 function getPageFromHash() {
