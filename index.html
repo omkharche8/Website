@@ -3,40 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iPhone Calculator</title>
+    <title>Om Kharche</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="calculator">
-        <div class="display">
-            <div class="result">0</div>
+    <div class="main-wrapper">
+        <div class="sidebar">
+            <div class="title" id="home-link">Om Kharche</div>
+            <div class="links">
+                <a href="#youtube" class="link" data-page="youtube">youtube</a>
+                <a href="#instagram" class="link" data-page="instagram">instagram</a>
+                <a href="#forbes" class="link" data-page="forbes">forbes</a>
+                <a href="#x" class="link" data-page="x">X</a>
+                <a href="#contact" class="link" data-page="contact">contact</a>
+            </div>
         </div>
-        <div class="buttons">
-            <button class="function">AC</button>
-            <button class="function">±</button>
-            <button class="function">%</button>
-            <button class="operator">÷</button>
-            
-            <button class="number">7</button>
-            <button class="number">8</button>
-            <button class="number">9</button>
-            <button class="operator">×</button>
-            
-            <button class="number">4</button>
-            <button class="number">5</button>
-            <button class="number">6</button>
-            <button class="operator">−</button>
-            
-            <button class="number">1</button>
-            <button class="number">2</button>
-            <button class="number">3</button>
-            <button class="operator">+</button>
-            
-            <button class="number zero">0</button>
-            <button class="number">.</button>
-            <button class="operator">=</button>
+        <div class="content-area">
+            <div id="pages">
+                <div class="page" id="page-home">
+                    <div class="content-box"></div>
+                </div>
+                <div class="page" id="page-youtube">
+                    <div class="content-box"><div class="page-content">omg, could you imagine??</div></div>
+                </div>
+                <div class="page" id="page-instagram">
+                    <div class="content-box"><div class="page-content">omg, could you imagine??</div></div>
+                </div>
+                <div class="page" id="page-forbes">
+                    <div class="content-box"><div class="page-content">soon :)</div></div>
+                </div>
+                <div class="page" id="page-x">
+                    <div class="content-box"><div class="page-content">omg, could you imagine??</div></div>
+                </div>
+                <div class="page" id="page-contact">
+                    <div class="content-box"><div class="page-content">
+                        are you trying to contact me for a<br>
+                        <a href="#" class="contact-link">business inquiry</a> or <a href="#" class="contact-link">something else</a>?
+                    </div></div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
 </body>
-</html> 
+</html>
+
+
