@@ -123,6 +123,8 @@ html, body {
     box-sizing: border-box;
     padding: 40px 48px;
     background: #fff;
+    position: relative;
+    padding-top: 60px;
 }
 
 .page-content {
@@ -153,6 +155,128 @@ html, body {
     margin-top: 0.75rem;
     text-align: center;
     width: 100%;
+}
+
+/* Essay Page Specific Styles */
+.essays-page-content {
+    text-align: left;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+
+    /* Minimalist Scrollbar for WebKit browsers */
+    &::-webkit-scrollbar {
+        width: 8px; /* Width of the scrollbar */
+    }
+    &::-webkit-scrollbar-track {
+        background: transparent; /* Make track transparent */
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2); /* Subtle thumb color */
+        border-radius: 10px;
+        border: 2px solid transparent; /* Creates padding around thumb */
+        background-clip: content-box;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(0, 0, 0, 0.4); /* Darker on hover */
+    }
+
+    /* Minimalist Scrollbar for Firefox */
+    scrollbar-width: thin; /* "auto" or "thin" */
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* thumb and track color */
+}
+
+.essay-entry {
+    margin-bottom: 2.5rem; /* Space between essay entries */
+}
+
+.essay-date {
+    font-family: "Roboto Mono", monospace;
+    font-size: 1rem; /* Same as links/other content */
+    font-weight: 700; /* Bold date */
+    color: #333; /* Slightly darker for emphasis */
+    margin-bottom: 0.75rem;
+}
+
+.essay-text p {
+    font-family: "Roboto Mono", monospace;
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 1rem; /* Space between paragraphs within an essay */
+}
+
+.essay-text p:last-child {
+    margin-bottom: 0;
+}
+
+/* Essay Search Styles */
+.essay-search-controls {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 10;
+}
+
+#essay-search-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+    transition: color 0.2s;
+}
+#essay-search-toggle svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2.5px;
+}
+#essay-search-toggle:hover {
+    color: #333;
+}
+
+#essay-search-input {
+    border: 1px solid #eee;
+    border-radius: 15px;
+    padding: 6px 12px;
+    font-family: "Roboto Mono", monospace;
+    font-size: 0.9rem;
+    width: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: width 0.3s ease, opacity 0.3s ease, visibility 0.3s;
+    order: -1;
+    background-color: #fff;
+}
+
+.essay-search-controls.active #essay-search-input {
+    width: 220px;
+    opacity: 1;
+    visibility: visible;
+    border-color: #ccc;
+}
+
+/* Highlighting Style */
+.highlight {
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: rgba(85, 85, 85, 0.5);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    background-color: transparent;
+    color: inherit;
+}
+
+/* Style for hidden essay entries */
+.essay-entry.hidden {
+    display: none;
 }
 
 @media (max-width: 700px) {
@@ -187,6 +311,9 @@ html, body {
         display: flex;
         align-items: center;
         justify-content: center;
+        padding-top: 60px;
+        padding-left: 4vw;
+        padding-right: 4vw;
     }
     .page-content {
         font-size: 1rem;
@@ -194,5 +321,22 @@ html, body {
     }
     .contact-link {
         font-size: 1rem;
+    }
+    .essays-page-content {
+        text-align: left;
+        padding: 0 5vw;
+    }
+    .essay-date {
+        font-size: 0.95rem;
+    }
+    .essay-text p {
+        font-size: 0.95rem;
+    }
+    .essay-search-controls {
+        top: 15px;
+        right: 15px;
+    }
+    .essay-search-controls.active #essay-search-input {
+        width: calc(100% - 60px);
     }
 }
