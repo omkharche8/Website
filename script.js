@@ -19,13 +19,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial page
     showPage(getPageFromHash());
     // Navigation
-    document.querySelectorAll('.link').forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
-            const page = this.getAttribute('data-page');
-            if (page) {
-                window.location.hash = page;
-                showPage(page);
+    document.querySelectorAll('.sidebar .link').forEach(link => {
+        link.addEventListener('click', function (event) {
+            const pageName = this.getAttribute('data-page');
+
+            if (pageName) {
+                // Handle internal SPA navigation
+                event.preventDefault();
+                window.location.hash = pageName;
+                showPage(pageName);
+            } else {
+                // Handle external link click - show 'home' (blank) page content
+                // Default link action (opening in new tab) is NOT prevented
+                showPage('home');
+                // Optionally, reset hash if you want the URL to reflect the blank state
+                // window.location.hash = 'home'; // or ''
             }
         });
     });
