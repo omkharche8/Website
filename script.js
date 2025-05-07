@@ -2,6 +2,10 @@
 let clockInterval = null;
 let currentActivePage = null; // Keep track of the current page
 
+// Essay Search State
+let essayMatches = [];
+let currentMatchIndex = -1;
+
 function updateISTClock() {
     const clockElement = document.getElementById('live-clock');
     if (clockElement) {
@@ -28,17 +32,38 @@ function removeHighlights(container) {
     container.normalize();
 }
 
+// --- Helper: Scroll to Element ---
+function smoothScrollTo(element, container) {
+    const offsetTop = element.offsetTop;
+    container.scrollTo({
+        top: offsetTop - 30, // Adjust offset
+        behavior: 'smooth'
+    });
+}
+
+// --- Helper: Update Nav Button States ---
+function updateNavButtons() {
+    const prevButton = document.getElementById('essay-search-prev');
+    const nextButton = document.getElementById('essay-search-next');
+    if (!prevButton || !nextButton) return;
+
+    prevButton.disabled = currentMatchIndex <= 0;
+    nextButton.disabled = currentMatchIndex >= essayMatches.length - 1;
+}
+
 // --- Essay Search Logic ---
 function filterEssays() {
     if (currentActivePage !== 'essays') return;
 
     const searchInput = document.getElementById('essay-search-input');
-    const searchTerm = searchInput.value.trim(); // Trim whitespace
+    const searchTerm = searchInput.value.trim();
     const essaysContainer = document.querySelector('#page-essays .essays-page-content');
     const entries = essaysContainer.querySelectorAll('.essay-entry');
-    let firstVisibleEntry = null;
+    const searchControls = document.querySelector('.essay-search-controls');
 
-    // Remove previous highlights first
+    essayMatches = []; // Reset matches
+    currentMatchIndex = -1; // Reset index
+
     removeHighlights(essaysContainer);
 
     entries.forEach(entry => {
@@ -51,10 +76,9 @@ function filterEssays() {
 
         if (isMatch) {
             entry.classList.remove('hidden');
-            if (!firstVisibleEntry) {
-                firstVisibleEntry = entry; // Found the first one to scroll to
-            }
-            // Apply new highlights if there's a search term
+            essayMatches.push(entry); // Add to matches array
+
+            // Apply highlights
             if (searchTerm !== '' && entryTextElement) {
                 const regex = new RegExp('(' + searchTerm.replace(/[-\/\\^$*+?.()|[\\]{}]/g, '\\$&') + ')', 'gi');
                 entryTextElement.innerHTML = entryTextElement.innerHTML.replace(regex, '<span class="highlight">$1</span>');
@@ -64,17 +88,34 @@ function filterEssays() {
         }
     });
 
-    // Scroll to the first visible entry if search term is not empty
-    if (firstVisibleEntry && searchTerm !== '') {
-        // Use the scrollable container
-        const offsetTop = firstVisibleEntry.offsetTop;
-        essaysContainer.scrollTo({
-            top: offsetTop - 30, // Adjust 30px offset as needed for padding/search bar
-            behavior: 'smooth'
-        });
-    } else if (searchTerm === '') {
-        // Scroll to top if search is cleared
-        essaysContainer.scrollTo({ top: 0, behavior: 'smooth' });
+    if (searchTerm !== '' && essayMatches.length > 0) {
+        currentMatchIndex = 0; // Start at the first match
+        smoothScrollTo(essayMatches[currentMatchIndex], essaysContainer);
+        searchControls.classList.add('has-results'); // Show nav buttons
+    } else {
+        searchControls.classList.remove('has-results'); // Hide nav buttons
+        if (searchTerm === '') {
+            essaysContainer.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+    updateNavButtons(); // Update disabled state
+}
+
+function goToNextMatch() {
+    if (currentMatchIndex < essayMatches.length - 1) {
+        currentMatchIndex++;
+        const essaysContainer = document.querySelector('#page-essays .essays-page-content');
+        smoothScrollTo(essayMatches[currentMatchIndex], essaysContainer);
+        updateNavButtons();
+    }
+}
+
+function goToPrevMatch() {
+    if (currentMatchIndex > 0) {
+        currentMatchIndex--;
+        const essaysContainer = document.querySelector('#page-essays .essays-page-content');
+        smoothScrollTo(essayMatches[currentMatchIndex], essaysContainer);
+        updateNavButtons();
     }
 }
 
@@ -82,8 +123,10 @@ function setupEssaySearch() {
     const searchToggle = document.getElementById('essay-search-toggle');
     const searchInput = document.getElementById('essay-search-input');
     const searchControls = document.querySelector('.essay-search-controls');
+    const prevButton = document.getElementById('essay-search-prev');
+    const nextButton = document.getElementById('essay-search-next');
 
-    if (searchToggle && searchInput && searchControls) {
+    if (searchToggle && searchInput && searchControls && prevButton && nextButton) {
         searchToggle.addEventListener('click', () => {
             searchControls.classList.toggle('active');
             if (searchControls.classList.contains('active')) {
@@ -93,17 +136,20 @@ function setupEssaySearch() {
 
         searchInput.addEventListener('input', filterEssays);
 
+        // Add listeners for nav buttons
+        prevButton.addEventListener('click', goToPrevMatch);
+        nextButton.addEventListener('click', goToNextMatch);
+
         // Optional: Close search if user clicks outside
         document.addEventListener('click', (event) => {
             if (!searchControls.contains(event.target) && searchControls.classList.contains('active')) {
-                if (event.target !== searchInput && event.target !== searchToggle) {
+                if (event.target !== searchInput && event.target !== searchToggle && event.target !== prevButton && event.target !== nextButton) {
                     searchControls.classList.remove('active');
                 }
             }
         });
     }
 }
-// --- End Essay Search Logic ---
 
 function showPage(pageId) {
     const pages = document.querySelectorAll('.page');
@@ -124,11 +170,16 @@ function showPage(pageId) {
         const searchControls = document.querySelector('.essay-search-controls');
         const essaysContainer = document.querySelector('#page-essays .essays-page-content');
         if (searchInput) searchInput.value = '';
-        if (searchControls) searchControls.classList.remove('active');
+        if (searchControls) {
+            searchControls.classList.remove('active');
+            searchControls.classList.remove('has-results'); // Hide nav buttons
+        }
         if (essaysContainer) {
-            removeHighlights(essaysContainer); // Clear highlights when leaving
+            removeHighlights(essaysContainer);
             document.querySelectorAll('#page-essays .essay-entry.hidden').forEach(entry => entry.classList.remove('hidden'));
-            essaysContainer.scrollTop = 0; // Reset scroll
+            essaysContainer.scrollTop = 0;
+            essayMatches = []; // Clear matches array
+            currentMatchIndex = -1; // Reset index
         }
     }
 
