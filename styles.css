@@ -1,3 +1,30 @@
+:root {
+    --bg-color-light: #fff;
+    --text-color-light: #555;
+    --link-color-light: #555;
+    --title-color-light: #555;
+    --sidebar-bg-light: #fff;
+    --content-box-bg-light: #fff;
+    --border-color-light: #e0e0e0;
+    --button-hover-bg-light: #f0f0f0;
+    --button-hover-text-light: #333;
+    --essay-date-color-light: #666;
+
+    --bg-color-dark: #1e2022;
+    --text-color-dark: #f0f0f0; /* Slightly off-white for general text */
+    --link-color-dark: #70ab8a; /* Green */
+    --title-color-dark: #ff4f24; /* New Orange */
+    --sidebar-bg-dark: #1e2022;
+    --content-box-bg-dark: #1e2022;
+    --border-color-dark: #444;
+    --button-hover-bg-dark: #333;
+    --button-hover-text-dark: #70ab8a;
+    --essay-date-color-dark: #aaa;
+
+    /* Transitions */
+    --theme-transition-duration: 0.2s;
+}
+
 /* Reset default styles */
 * {
     margin: 0;
@@ -7,11 +34,13 @@
 
 /* Base styles */
 body {
-    background: #fff;
+    background: var(--bg-color-light);
     font-family: "Roboto Mono", monospace;
     min-height: 100vh;
     padding-left: 180px;
     position: relative;
+    color: var(--text-color-light);
+    transition: background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease;
 }
 
 /* Main container */
@@ -30,8 +59,9 @@ body {
     font-weight: 700;
     letter-spacing: 0.02em;
     margin-bottom: 0.5rem;
-    color: #555;
+    color: var(--title-color-light);
     white-space: nowrap;
+    transition: color var(--theme-transition-duration) ease;
 }
 
 /* Links container */
@@ -46,12 +76,12 @@ body {
 /* Link styles */
 .link {
     font-family: "Roboto Mono", monospace;
-    color: #555;
+    color: var(--link-color-light);
     text-decoration: none;
     font-size: 1rem;
     text-transform: none;
     letter-spacing: 0.02em;
-    transition: opacity 0.2s;
+    transition: opacity 0.2s, color var(--theme-transition-duration) ease;
     line-height: 1.3;
 }
 
@@ -79,8 +109,9 @@ html, body {
     left: 0;
     top: 0;
     height: 100vh;
-    background-color: #fff;
+    background-color: var(--sidebar-bg-light, #fff);
     z-index: 100;
+    transition: background-color var(--theme-transition-duration) ease;
 }
 
 .content-area {
@@ -90,25 +121,35 @@ html, body {
 
 #pages {
     width: 100%;
+    position: relative;
+    overflow: hidden;
+    min-height: calc(100vh - 48px - 24px);
 }
 
 .page {
     width: 100%;
-    display: none;
     opacity: 0;
-    transition: opacity 0.4s cubic-bezier(.4,0,.2,1);
-    will-change: opacity;
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateY(5px);
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out, visibility 0s linear 0.2s;
+    will-change: opacity, transform;
 }
 
 .page.active {
-    display: block;
     opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out, visibility 0s linear 0s;
     min-height: calc(100vh - 48px);
     padding-top: 1px;
+    z-index: 1;
 }
 
 .content-box {
-    width: 700px;
+    width: 850px;
     max-width: calc(100% - 96px);
     height: calc(100vh - 48px - 24px);
     display: flex;
@@ -118,15 +159,16 @@ html, body {
     margin: 48px auto 24px auto;
     box-sizing: border-box;
     padding: 0;
-    background: #fff;
+    background: var(--content-box-bg-light);
     position: relative;
     overflow: hidden;
+    transition: background-color var(--theme-transition-duration) ease;
 }
 
 .page-content {
     font-family: "Roboto Mono", monospace;
     font-size: 1rem;
-    color: #555;
+    color: var(--text-color-light);
     line-height: 1.5;
     text-align: center;
     width: 100%;
@@ -134,10 +176,10 @@ html, body {
 
 .contact-link {
     font-family: "Roboto Mono", monospace;
-    color: #555;
+    color: var(--link-color-light);
     text-decoration: underline;
     font-size: 1rem;
-    transition: opacity 0.2s;
+    transition: opacity 0.2s, color var(--theme-transition-duration) ease;
 }
 
 .contact-link:hover {
@@ -147,7 +189,7 @@ html, body {
 #live-clock {
     font-family: "Roboto Mono", monospace;
     font-size: 1rem;
-    color: #555;
+    color: var(--text-color-light);
     margin-top: 0.75rem;
     text-align: center;
     width: 100%;
@@ -176,9 +218,9 @@ html, body {
 
 .essay-date {
     font-family: "Roboto Mono", monospace;
-    font-size: 1rem; /* Same as links/other content */
-    font-weight: 700; /* Bold date */
-    color: #333; /* Slightly darker for emphasis */
+    font-size: 1rem;
+    font-weight: 700;
+    color: #333;
     margin-bottom: 0.75rem;
 }
 
@@ -413,4 +455,208 @@ html, body {
         margin-top: 0.75rem;
         width: 100%;
     }
+}
+
+/* ========================================== */
+/* Styles for Essay Headline List (index.html) */
+/* ========================================== */
+
+/* Ensure the container for the essay list has appropriate padding */
+/* if it's different from other page-content divs */
+.page#page-essays .essays-page-content {
+    padding-top: 10px; /* Adjust as needed, existing padding might be sufficient */
+    /* Consider if you need more specific padding than generic .page-content */
+}
+
+ul.essay-headlines-list {
+    list-style-type: none; /* Remove default list bullets */
+    padding-left: 0;       /* Remove default ul padding */
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+ul.essay-headlines-list li {
+    margin-bottom: 15px;  
+    padding-bottom: 10px; 
+    border-bottom: 1px solid var(--border-color-light);
+    transition: border-color var(--theme-transition-duration) ease;
+}
+
+ul.essay-headlines-list li:last-child {
+    border-bottom: none;    /* No border for the last item in the list */
+    margin-bottom: 0;
+}
+
+ul.essay-headlines-list .essay-list-date {
+    font-size: 0.8em;       
+    color: var(--essay-date-color-light);
+    margin-left: 8px;    
+    transition: color var(--theme-transition-duration) ease;
+}
+
+ul.essay-headlines-list a {
+    font-size: 1.05em;       
+    color: var(--link-color-light); /* Headline color */
+    text-decoration: none;  
+    font-weight: 400;       /* Normal font-weight, can be 700 if you prefer bold */
+    line-height: 1.4;
+    transition: color var(--theme-transition-duration) ease;
+}
+
+ul.essay-headlines-list a:hover {
+    color: #0056b3; /* Standard hover, may need dark mode version or var */
+    text-decoration: underline; 
+}
+
+/* Responsive adjustments for the essay list */
+@media (max-width: 768px) {
+    ul.essay-headlines-list li {
+        margin-bottom: 10px; /* Further reduced for mobile */
+        padding-bottom: 6px; /* Further reduced for mobile */
+    }
+
+    ul.essay-headlines-list .essay-list-date {
+        font-size: 0.75em;
+        margin-left: 6px; /* Spacing for inline date in mobile */
+    }
+
+    ul.essay-headlines-list a {
+        font-size: 0.9em; /* Reduced font size for mobile titles */
+    }
+    .page#page-essays .essays-page-content {
+        padding-left: 15px; /* Adjust side padding for mobile if needed */
+        padding-right: 15px;
+    }
+}
+
+/* Comment for future self: The styles for the full-screen essay viewer */
+/* are currently within essays.html in a <style> tag. */
+/* Consider moving them to this global styles.css if more shared styling is needed */
+/* or if essays.html starts including shared components like the sidebar. */
+/* For now, keeping them separate is fine as essays.html is a distinct view. */
+
+/* Theme Toggle Button */
+#theme-toggle-button {
+    position: fixed;
+    bottom: 30px; /* Adjust as needed */
+    left: 32px;  /* Aligns with sidebar's left padding */
+    width: 40px;   /* Fixed width for a squarish button */
+    height: 40px;  /* Fixed height for a squarish button */
+    padding: 8px;  /* Padding around the icon */
+    background-color: var(--sidebar-bg-light, #fff);
+    border: 1px solid var(--border-color-light);
+    color: var(--link-color-light); /* Icon inherits this color via currentColor */
+    cursor: pointer;
+    border-radius: 4px; /* Keep slightly rounded, or 0 for sharp square */
+    display: flex; /* For centering icon */
+    align-items: center; /* Center icon vertically */
+    justify-content: center; /* Center icon horizontally */
+    z-index: 101; /* Above sidebar (if sidebar is 100) */
+    transition: background-color 0.2s, color 0.2s, border-color var(--theme-transition-duration) ease;
+}
+
+#theme-toggle-button:hover {
+    background-color: var(--button-hover-bg-light);
+    /* color var for icon hover can be added if needed, or let CSS var take care of it */
+}
+
+/* SVG icon styling within the button */
+#theme-toggle-button .theme-icon {
+    width: 20px;  /* Slightly larger icon for the button size */
+    height: 20px;
+    /* vertical-align: middle; no longer needed with flex centering */
+}
+
+/* Hide toggle button on smaller screens */
+@media (max-width: 700px) {
+    #theme-toggle-button {
+        /* display: none; REMOVED to make it visible */
+        /* Inherits position: fixed, width, height, padding etc. from desktop rule */
+        left: auto; /* Unset left positioning from desktop */
+        right: 20px;  /* Position from right for mobile */
+        bottom: 20px; /* Position from bottom for mobile */
+        /* Consider if width/height/padding needs to be smaller for mobile */
+        /* For example:
+        width: 36px;
+        height: 36px;
+        padding: 6px;
+        */
+    }
+    /* Ensure other mobile-specific styles for the button are not unintentionally overridden */
+    /* The .theme-icon styles should still apply as they are not in a media query */
+}
+
+/* DARK MODE STYLES */
+body.dark-mode {
+    background: var(--bg-color-dark);
+    color: var(--text-color-dark);
+}
+
+body.dark-mode .sidebar {
+    background-color: var(--sidebar-bg-dark);
+}
+
+body.dark-mode .title {
+    color: var(--title-color-dark);
+}
+
+body.dark-mode .link {
+    color: var(--link-color-dark);
+}
+
+body.dark-mode .content-box {
+    background-color: var(--content-box-bg-dark);
+}
+
+body.dark-mode .page-content {
+    color: var(--text-color-dark);
+}
+
+body.dark-mode .contact-link {
+    color: var(--link-color-dark);
+}
+
+body.dark-mode #live-clock {
+    color: var(--text-color-dark);
+}
+
+body.dark-mode ul.essay-headlines-list li {
+    border-bottom-color: var(--border-color-dark);
+}
+
+body.dark-mode ul.essay-headlines-list .essay-list-date {
+    color: var(--essay-date-color-dark);
+}
+
+body.dark-mode ul.essay-headlines-list a {
+    color: var(--link-color-dark);
+}
+
+body.dark-mode ul.essay-headlines-list a:hover {
+    color: var(--link-color-dark); /* Keep green on hover, maybe slightly brighter/dimmer variation? */
+    filter: brightness(1.2); /* Example: make it a bit brighter */
+}
+
+body.dark-mode #theme-toggle-button {
+    background-color: var(--sidebar-bg-dark, #1e2022);
+    border-color: var(--border-color-dark);
+    color: var(--link-color-dark);
+}
+
+body.dark-mode #theme-toggle-button:hover {
+    background-color: var(--button-hover-bg-dark);
+    color: var(--button-hover-text-dark);
+}
+
+/* Styles for SVG icons if embedded, or if color needs to change */
+body.dark-mode #theme-toggle-button .theme-icon {
+    fill: var(--link-color-dark); /* Assuming SVG uses fill for color */
+}
+
+/* Ensure center alignment for specific pages in PC view */
+#page-forbes .page-content,
+#page-contact .page-content {
+    text-align: center;
+    align-self: center;
+    font-family: "Roboto Mono", monospace; /* Explicitly ensure font */
 }

@@ -20,6 +20,7 @@
                 <a href="#forbes" class="link" data-page="forbes">forbes</a>
                 <a href="#essays" class="link" data-page="essays">essays</a>
                 <a href="#contact" class="link" data-page="contact">contact</a>
+                <button id="theme-toggle-button" title="Toggle light/dark theme">Toggle Theme</button>
             </div>
         </div>
         <div class="content-area">  
@@ -40,128 +41,56 @@
                 <div class="page" id="page-essays">
                     <div class="content-box">
                         <div class="page-content essays-page-content">
-                            <div class="essay-search-controls">
-                                <input type="search" id="essay-search-input" placeholder="Search essays...">
-                                <button id="essay-search-prev" class="search-nav-button" aria-label="Previous match" title="Previous match">↑</button>
-                                <button id="essay-search-next" class="search-nav-button" aria-label="Next match" title="Next match">↓</button>
-                                <!-- Search Icon Toggle (Initially Visible) -->
-                                <button id="essay-search-open-toggle" class="search-toggle-button" aria-label="Open search">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                                </button>
-                                <!-- Close Icon Toggle (Initially Hidden) -->
-                                <button id="essay-search-close-toggle" class="search-toggle-button" aria-label="Close search">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                </button>
-                            </div>
-                            <!-- ESSAY ENTRIES START HERE: ADD NEWEST ENTRIES AT THE TOP -->
-                            <!-- HOW TO ADD A NEW ESSAY (AT THE TOP):
-                                <div class="essay-entry">
-                                    <h3 class="essay-date">YOUR DATE (e.g., 01 January 2025)</h3>
+                            <!-- 
+                                ESSAY LIST:
+                                This section displays a list of essay headlines.
+                                Essays are loaded into 'essays.html' for viewing.
+
+                                TO ADD A NEW ESSAY:
+                                1. Create a new .html file in the 'essays_content/' directory.
+                                   The file should contain the essay content, typically structured as:
+                                   <h3 class="essay-date">DD Month YYYY</h3>
                                     <div class="essay-text">
-                                        <p>Your first paragraph here.</p>
-                                        <p>Your second paragraph here, if any.</p>
+                                       <p>Your first paragraph (this will be the headline).</p>
+                                       <p>More paragraphs...</p>
                                     </div>
-                                </div>
+                                   (The filename for this new .html file should be unique, e.g., YYYY-MM-DD.html)
+
+                                2. Add a new list item to the 'essay-headlines-list' below.
+                                   Keep the list in reverse chronological order (newest essay at the top).
+                                   Update the href to point to your new file.
+                                   The link should contain the headline, followed by the date in parentheses.
+                                   Example for a new entry:
+                                   <li>
+                                       <a href="essays.html?load=2025-01-01.html">New Essay Headline <span class="essay-list-date">(01 January 2025)</span></a>
+                                   </li>
                             -->
-
-                            <!-- NEWEST Entry (Example - Add your actual newest here) -->
-                            <!-- <div class="essay-entry">
-                                <h3 class="essay-date">01 January 2025</h3>
-                                <div class="essay-text">
-                                    <p>This is the newest essay, added at the top.</p>
-                                </div>
-                            </div> -->
-
-                            <div class="essay-entry"> <!-- Existing Entry: 29 October 2024 -->
-                                <h3 class="essay-date">29 October 2024</h3>
-                                <div class="essay-text">
-                                    <p>20th Year, Birthday Month Check</p>
-                                    <p>Lovely month, Had pretty rough time with some people in initials of the month, made me reflect how do i treat relations in life but whatever it is have made peace with it, Whatsoever it is. Learnings, Unlearnings & Relearnings.</p>
-                                    <p>Man Exams are so handsfree this time, that's the least thing i think aboout during the entire semester and I'm scoring way better than the avg (A's Level) and that's super weird for me, as i struggled with it pretty much for 2 years of my life.</p>
-                                    <p>Confidence Building be going well too, am able to have better approach techniques at stuff and can actually get stuff done super calmly where all these things matter</p>
-                                    <p>Obsessing over an Idea of Daily Newspaper revolution lately, working on it. But gotta keep my min(Placement) prep ongoing to keep myself secure</p>
-                                </div>
-                            </div>
-
-                            <!-- ... all other existing entries in reverse chronological order ... -->
-                            
-                            
-                            <div class="essay-entry"> <!-- Existing Entry: 15 July 2024 -->
-                                <h3 class="essay-date">15 July 2024</h3>
-                                <div class="essay-text">
-                                    <p>First Day of College, pretty epic</p>
-                                    <p>Leaving Home was the toughest thing to ever do, seeing the neighbour hood go away where i did so many things made me sad</p>
-                                    <p>But back to college, took me like 24 hours door to door but was fun. Good talking on the trip.</p>
-                                    <p>Had a magical convesation in the train at night. This happens rarely but it was truly amazing. I felt amazing and it was like heart warming. I hope i know more about this person as time passes, its really interesting and she is fascinating.</p>
-                                    <p>Too many seniors in the train, got to know about placements and all so that also added up.</p>
-                                    <p>Skipped first day of class to get a course which i didn't get initially, got it nevertheless. Gave laddoos, felt really happy. Real stuff starts tomorrow. Everything is now set</p>
-                                </div>
-                            </div>
-                            
-                            <div class="essay-entry"> <!-- Existing Entry: 2 July 2024 -->
-                                <h3 class="essay-date">2 July 2024</h3>
-                                <div class="essay-text">
-                                    <p>It's the other part of year now, Half Year Review</p>
-                                    <p>Man 2024s aging, it's the other part of year now. The summers were thought provoking. I finally got the RAWness what i was looking forward to in life. Thanks to Summers legit</p>
-                                    <p>The first part of year started pretty rough man, felt pretty distracted always whenever i checked my phone, always felt left out of place. Took a lot of friction to understand things. It's pretty important to understand the way you treat the next person, it's not compulsory that the next person will also treat you the same. whatever you do for them, they won't reciprocate it back</p>
-                                    <p>The academics and learning part was decent, nothing to write about it. It just went straight forward as it goes regularl</p>
-                                    <p>Now, its 3rd Year m8. This year has got the most effort to reward ratio, so i have to embrace myself for that. because i'm here to do something, to have an impact</p>
-                                    <p>Also my maladaptive day dreaming has to stop. It drains me out always whenever i do it.</p>
-                                </div>
-                            </div>
-                            
-                            <div class="essay-entry"> <!-- Existing Entry: 12 June 2024 -->
-                                <h3 class="essay-date">12 June 2024</h3>
-                                <div class="essay-text">
-                                    <p>WTF is wrong with me???!!!!</p>
-                                    <p>Bruh this is the 4th time i'm seeing my GPA and feeling what do i even lack in life.</p>
-                                    <p>This time i have got 8.5 credits of C grade all super unexpected!!. By 1 mark lost them!!!. DBMS lost A by 2 marks and Sensors by 3 marks and all were because of DAs.</p>
-                                    <p>I still have no idea what is happening with my life here. Whatever i do i just can't help it. The CGPA still lies at 8.20 which increased by 0.01 this time. I mean *sarcastic laugh* I have nothing to say.</p>
-                                    <p>Today morning the pain was a lot man, it was legit equivalent to something like a heartbreak. The body just pauses and implodes. I hope i recover from this, gotta do something.</p>
-                                </div>
-                            </div>
-                            
-                            <div class="essay-entry"> <!-- Existing Entry: 6 June 2024 -->
-                                <h3 class="essay-date">6 June 2024</h3>
-                                <div class="essay-text">
-                                    <p>Learning to Dance</p>
-                                    <p>Yo I have a wedding coming up (My Sisters) in exactly a month from now. So everyone here is going to dance. Even I'm in it!.</p>
-                                    <p>Learning to Dance is like the most different to learn skill for me. As i have never danced after 6th Grade (Stage Performance) getting those moves out my body is lil time taking but gotta do it.</p>
-                                    <p>Dance just makes you happy what i observed from practice and makes you feel good about yourself. I liked it, I will rock the dance floor hehehehe.</p>
-                                </div>
-                            </div>
-                            
-                            <div class="essay-entry"> <!-- Existing Entry: 20 May 2024 -->
-                                <h3 class="essay-date">20 May 2024</h3>
-                                <div class="essay-text">
-                                    <p>Summer is in!</p>
-                                    <p>So I am home now and I got all days to myself, especially doing python. No idea but it just feels too good to practice the language itself. No Jazz just be proficient in doing the same thing.</p>
-                                    <p>Moreover would like to start a streak on going to gym/involved in physical activity for 40 days straight. Pretty Much possible.</p>
-                                    <p>Making a navbar at the top to put summer specials tho! Working on it simultaneously.</p>
-                                </div>
-                            </div>
-                            
-                            <div class="essay-entry"> <!-- Existing Entry: 12 May 2024 -->
-                                <h3 class="essay-date">12 May 2024</h3>
-                                <div class="essay-text">
-                                    <p>More Work Less Time Good, Less Work More Time Bad</p>
-                                    <p>I technically only have 3 modules to do, others i need not learn anything new, but still the procastination is decently high.</p>
-                                    <p>Gotta start my work now. Edit: My Exam was amazing lets see how the results go now</p>
-                                </div>
-                            </div>
-
-                            <div class="essay-entry"> <!-- Existing Entry: 10 May 2024 -->
-                                <h3 class="essay-date">10 May 2024</h3>
-                                <div class="essay-text">
-                                    <p>I have been writing a lot it's just that you people haven't found it out yet</p>
-                                    <p>Its amazing to have page to yourself where the main focus is to write that's it (there is a very bleak chance i will make the css better)</p>
-                                    <p>I'll write happenings here, i watch a movie its exciting? will write</p>
-                                    <p>I make a new advancement in life (whatever) will write</p>
-                                    <p>Welcome here</p>
-                                </div>
-                            </div>
-                            
-                            <!-- ESSAY ENTRIES END HERE -->
+                            <ul class="essay-headlines-list">
+                                <li>
+                                    <a href="essays.html?load=2024-10-29.html">20th Year, Birthday Month Check <span class="essay-list-date">(29 October 2024)</span></a>
+                                </li>
+                                <li>
+                                    <a href="essays.html?load=2024-07-15.html">First Day of College, pretty epic <span class="essay-list-date">(15 July 2024)</span></a>
+                                </li>
+                                <li>
+                                    <a href="essays.html?load=2024-07-02.html">It's the other part of year now, Half Year Review <span class="essay-list-date">(2 July 2024)</span></a>
+                                </li>
+                                <li>
+                                    <a href="essays.html?load=2024-06-12.html">WTF is wrong with me???!!!! <span class="essay-list-date">(12 June 2024)</span></a>
+                                </li>
+                                <li>
+                                    <a href="essays.html?load=2024-06-06.html">Learning to Dance <span class="essay-list-date">(6 June 2024)</span></a>
+                                </li>
+                                <li>
+                                    <a href="essays.html?load=2024-05-20.html">Summer is in! <span class="essay-list-date">(20 May 2024)</span></a>
+                                </li>
+                                <li>
+                                    <a href="essays.html?load=2024-05-12.html">More Work Less Time Good, Less Work More Time Bad <span class="essay-list-date">(12 May 2024)</span></a>
+                                </li>
+                                <li>
+                                    <a href="essays.html?load=2024-05-10.html">I have been writing a lot it's just that you people haven't found it out yet <span class="essay-list-date">(10 May 2024)</span></a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
