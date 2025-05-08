@@ -55,14 +55,14 @@
             border-radius: 4px;
             font-family: 'Roboto Mono', monospace;
             font-size: 0.9em; /* Will be overridden by later rule */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: background-color 0.2s, box-shadow 0.2s;
+            border: 1px solid var(--border-color-light, #ccc); /* ADDED for light mode consistency */
+            transition: background-color 0.2s; /* box-shadow 0.2s; --- REMOVED */
             z-index: 1000; /* Ensure it's on top */
         }
 
         .go-back-button:hover {
             background-color: var(--button-hover-bg-light); /* Slightly darker on hover */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            /* box-shadow: 0 4px 8px rgba(0,0,0,0.15); --- REMOVED for consistency */
         }
 
         /* Responsive adjustments for the go-back button */
@@ -91,13 +91,13 @@
             color: var(--text-color-dark, #f0f0f0); /* General light text for paragraphs */
         }
         body.dark-mode .go-back-button {
-            background-color: #282a2d; /* Darker button background */
+            background-color: var(--sidebar-bg-dark); /* Darker button background - updated */
             color: var(--accent-color-dark, #70ab8a); /* Green text */
-            border: 1px solid var(--accent-color-dark, #70ab8a); /* Optional green border */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3); /* Darker shadow */
+            border: 1px solid var(--accent-color-dark, #70ab8a); /* Optional green border - UPDATED to green */
+            /* box-shadow: 0 2px 5px rgba(0,0,0,0.3); --- REMOVED for consistency */
         }
         body.dark-mode .go-back-button:hover {
-            background-color: #3a3d40; /* Slightly lighter dark on hover */
+            background-color: var(--button-hover-bg-dark); /* Slightly lighter dark on hover - updated */
             color: var(--accent-color-dark, #70ab8a);
             filter: brightness(1.1);
         }
@@ -145,7 +145,7 @@
         /* Dark Mode Overrides for Theme Button on Essays Page */
         body.dark-mode #theme-toggle-button {
             background-color: var(--sidebar-bg-dark, #1e2022); /* Use BG variable */
-            border-color: var(--border-color-dark, #444);
+            border: 1px solid var(--accent-color-dark, #70ab8a); /* UPDATED to green */
             color: var(--link-color-dark, #70ab8a);
         }
 
@@ -159,7 +159,7 @@
             /* position: fixed; bottom: 20px; left: 20px; - inherited/existing */
             width: 40px; /* Match theme toggle size */
             height: 40px; /* Match theme toggle size */
-            padding: 0; /* Remove default padding */
+            padding: 8px; /* Remove default padding - UPDATED to 8px */
             display: flex; /* Use flexbox for centering */
             align-items: center; /* Center arrow vertically */
             justify-content: center; /* Center arrow horizontally */
