@@ -469,17 +469,26 @@ html, body {
 }
 
 ul.essay-headlines-list {
-    list-style-type: none; /* Remove default list bullets */
-    padding-left: 0;       /* Remove default ul padding */
+    list-style-type: none; /* Remove default bullets */
+    padding-left: 0; /* Remove default padding if any from UL */
     margin-top: 0;
     margin-bottom: 0;
 }
 
 ul.essay-headlines-list li {
-    margin-bottom: 15px;  
-    padding-bottom: 10px; 
-    border-bottom: 1px solid var(--border-color-light);
-    transition: border-color var(--theme-transition-duration) ease;
+    padding-left: 1.2em; /* Add padding to the left of li for the bullet */
+    position: relative; /* Needed for absolute positioning of the pseudo-element */
+    margin-bottom: 0.5rem; /* Keep or adjust existing margin */
+}
+
+ul.essay-headlines-list li::before {
+    content: "•"; /* The bullet character */
+    color: var(--text-color-light); /* Use theme variable for color */
+    position: absolute;
+    left: 0;
+    top: 0; /* Adjust if vertical alignment is off, might need a slight tweak depending on line-height */
+    font-size: 1em; /* Match text size or adjust as needed */
+    line-height: inherit; /* Inherit line height from parent li */
 }
 
 ul.essay-headlines-list li:last-child {
@@ -659,4 +668,8 @@ body.dark-mode #theme-toggle-button .theme-icon {
     text-align: center;
     align-self: center;
     font-family: "Roboto Mono", monospace; /* Explicitly ensure font */
+}
+
+body.dark-mode ul.essay-headlines-list li::before {
+    color: var(--text-color-dark); /* Use dark mode theme variable */
 }
