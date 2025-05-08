@@ -1,10 +1,10 @@
 :root {
-    --bg-color-light: #fff;
+    --bg-color-light: rgb(251, 246, 232);
     --text-color-light: #555;
     --link-color-light: #555;
     --title-color-light: #555;
-    --sidebar-bg-light: #fff;
-    --content-box-bg-light: #fff;
+    --sidebar-bg-light: rgb(251, 246, 232);
+    --content-box-bg-light: rgb(251, 246, 232);
     --border-color-light: #e0e0e0;
     --button-hover-bg-light: #f0f0f0;
     --button-hover-text-light: #333;
@@ -109,7 +109,7 @@ html, body {
     left: 0;
     top: 0;
     height: 100vh;
-    background-color: var(--sidebar-bg-light, #fff);
+    background-color: var(--sidebar-bg-light);
     z-index: 100;
     transition: background-color var(--theme-transition-duration) ease;
 }
@@ -245,7 +245,7 @@ html, body {
     display: flex;
     align-items: center;
     gap: 10px;
-    background-color: #fff;
+    background-color: var(--bg-color-light);
     padding: 5px;
     border-radius: 15px;
 }
@@ -306,7 +306,7 @@ html, body {
     visibility: hidden;
     transition: width 0.3s ease, opacity 0.3s ease, visibility 0.3s;
     order: -1;
-    background-color: #fff;
+    background-color: var(--bg-color-light);
 }
 
 .essay-search-controls.active #essay-search-input {
@@ -552,7 +552,7 @@ ul.essay-headlines-list a:hover {
     width: 40px;   /* Fixed width for a squarish button */
     height: 40px;  /* Fixed height for a squarish button */
     padding: 8px;  /* Padding around the icon */
-    background-color: var(--sidebar-bg-light, #fff);
+    background-color: var(--sidebar-bg-light);
     border: 1px solid var(--border-color-light);
     color: var(--link-color-light); /* Icon inherits this color via currentColor */
     cursor: pointer;
@@ -582,7 +582,7 @@ ul.essay-headlines-list a:hover {
         /* display: none; REMOVED to make it visible */
         /* Inherits position: fixed, width, height, padding etc. from desktop rule */
         left: auto; /* Unset left positioning from desktop */
-        right: 20px;  /* Position from right for mobile */
+        right: 15px;  /* Position from right for mobile - adjusted */
         bottom: 20px; /* Position from bottom for mobile */
         /* Consider if width/height/padding needs to be smaller for mobile */
         /* For example:
