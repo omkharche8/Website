@@ -236,6 +236,63 @@ html, body {
     margin-bottom: 0;
 }
 
+/* Styles for essay titles */
+.essay-text .essay-title-main {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: var(--title-color-light);
+    margin-bottom: 0.75em;
+}
+
+.essay-text .essay-title-section {
+    font-size: 1.25em;
+    font-weight: bold;
+    color: var(--title-color-light);
+    margin-bottom: 0.5em;
+    margin-top: 1.5em; /* Added some top margin */
+}
+
+/* Custom text style for introductory remarks or highlights in essays */
+.essay-text .custom-text {
+    font-size: 1.15em;
+    color: #555555; /* Gray for light theme */
+    font-weight: bold;
+    font-style: italic;
+    margin-bottom: 1.5em;
+}
+
+/* Responsive image container for essays */
+.responsive-image-container {
+    text-align: center;
+    margin: 25px 0;
+}
+
+.responsive-image-container img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Keep shadow for depth */
+}
+
+/* Dark mode overrides for essay titles and custom text */
+body.dark-mode #essay-display-area .essay-text .essay-title-main,
+body.dark-mode #essay-display-area .essay-text .essay-title-section {
+    color: var(--link-color-dark); /* Green for titles in dark mode */
+}
+
+body.dark-mode #essay-display-area .essay-text .custom-text {
+    color: var(--link-color-dark); /* Green for custom text in dark mode */
+    font-weight: normal; /* As per original template spec for dark mode */
+}
+
+/* Ensure images in dark mode don't have an overly bright default background if transparent */
+body.dark-mode .responsive-image-container img {
+    background-color: transparent; /* Or a subtle dark bg if needed for specific image types */
+}
+
 /* Essay Search Styles */
 .essay-search-controls {
     position: absolute;
