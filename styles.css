@@ -59,13 +59,13 @@ html {
 /* Consolidated Body styles */
 body {
     width: 100%;
-    height: 100%;
+    height: 100%; /* Ensure body is fixed to viewport height */
     font-family: 'Roboto Mono', monospace;
     color: var(--text-color-light);
     background-color: var(--bg-color-light); /* Fallback, Vanta will cover in dark mode */
     position: relative; /* For stacking context */
     transition: background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease;
-    overflow: hidden; /* Add this to prevent unwanted scrollbars */
+    overflow: hidden; /* Prevent body-level scrolling by default */
 }
 
 /* Sidebar (Desktop) */
@@ -89,16 +89,17 @@ body {
     position: relative; /* To sit above Vanta and contain flow */
     z-index: 1; /* Above Vanta */
     width: 100%;
-    min-height: 100%; /* Ensure it can be at least full height */
+    height: 100%; /* Ensure wrapper is fixed to viewport height */
     padding-left: 180px; /* Space for fixed sidebar on desktop */
     box-sizing: border-box;
     background-color: transparent; /* Wrapper itself is transparent */
+    /* overflow-y: auto; /* Remove this if body is overflow:hidden and specific children handle scroll */
 }
 
 /* Content Area - Sits to the right of the sidebar */
 .content-area {
     width: 100%; /* Fills the space provided by .main-wrapper's padding */
-    min-height: 100vh; /* Ensure content area can fill screen height */
+    height: 100%; /* Ensure content-area is fixed to viewport height */
     box-sizing: border-box;
     /* The content-box inside this will have margins and its own background */
 }
@@ -145,7 +146,7 @@ body {
 #pages {
     width: 100%;
     position: relative;
-    min-height: 100%; /* Ensure it can fill parent */
+    height: 100%; /* Ensure #pages container is fixed to viewport height */
 }
 
 .page {
@@ -166,12 +167,15 @@ body {
     transform: translateY(0);
     transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out, visibility 0s linear 0s;
     z-index: 1; /* Active page on top of other (hidden) pages */
+    height: 100%; /* Ensure active page is fixed to viewport height */
+    /* overflow-y: auto; /* Scroll should be handled by .content-box or .essays-page-content */
 }
 
 .content-box {
     width: 850px;
     max-width: calc(100% - 96px);
-    min-height: calc(100vh - 48px - 24px); /* Based on its own margins */
+    /* min-height: calc(100vh - 48px - 24px); Let's use fixed height from parent */
+    height: calc(100% - 48px - 24px); /* Calculate height based on parent, assuming parent is 100vh/100% */
     display: flex;
     flex-direction: column;
     margin: 48px auto 24px auto;
@@ -219,15 +223,23 @@ body {
 /* Essay Page Specific Styles */
 .essays-page-content { /* This is a .page-content div */
     flex-grow: 1;
-    overflow-y: auto;
+    overflow-y: auto; /* This should allow essay list to scroll */
     text-align: left; /* Override default text-align: center from .page-content */
     padding: 15px 48px 40px 48px; /* Further Reduced top padding to 15px */
-    scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
-    &::-webkit-scrollbar { width: 8px; }
-    &::-webkit-scrollbar-track { background: transparent; }
-    &::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.2); border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
-    &::-webkit-scrollbar-thumb:hover { background-color: rgba(0, 0, 0, 0.4); }
+    /* scrollbar-width: thin; */ /* REPLACED */
+    /* scrollbar-color: rgba(0, 0, 0, 0.2) transparent; */ /* REPLACED */
+    /* &::-webkit-scrollbar { width: 8px; } */ /* REPLACED - invalid CSS outside SCSS */
+    /* &::-webkit-scrollbar-track { background: transparent; } */ /* REPLACED */
+    /* &::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.2); border-radius: 10px; border: 2px solid transparent; background-clip: content-box; } */ /* REPLACED */
+    /* &::-webkit-scrollbar-thumb:hover { background-color: rgba(0, 0, 0, 0.4); } */ /* REPLACED */
+    /* NEW SCROLLBAR HIDING STYLES */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Separate rule for Webkit scrollbar hiding */
+.essays-page-content::-webkit-scrollbar {
+    display: none;  /* Webkit browsers */
 }
 
 .essay-entry {
@@ -444,11 +456,14 @@ body.dark-mode .responsive-image-container img {
 @media (max-width: 700px) {
     body {
         /* padding-left: 0; Is already 0 from base */
+        /* overflow: hidden; /* Already set on main body */
     }
     .main-wrapper {
         padding-left: 0; /* Remove sidebar padding */
-        overflow-y: visible; /* Allow body to scroll if content overflows */
-        min-height: unset; /* Let content dictate height */
+        /* overflow-y: visible; /* If body is overflow:hidden, this won't make body scroll */
+        height: 100%; /* Ensure it still respects viewport height */
+        display: flex; /* New: manage sidebar and content-area flow */
+        flex-direction: column; /* New: stack them vertically */
     }
     .sidebar {
         width: 100%;
@@ -456,31 +471,46 @@ body.dark-mode .responsive-image-container img {
         position: relative; /* No longer fixed, part of page flow */
         padding: 24px 24px 0 24px;
         z-index: auto;
+        flex-shrink: 0; /* New: Prevent sidebar from shrinking */
     }
     .content-area {
-        min-height: unset;
+        /* min-height: unset; This was on .content-area before, but it's actually on .content-box */
+        flex-grow: 1; /* New: Take remaining space */
+        min-height: 0; /* New: Allows content-area to shrink if needed and grow, robust for flex children. */
+        /* Its children (#pages > .page.active > .content-box) will be height: 100% of this. */
+        /* overflow: hidden; /* Optional: To clip any misbehaving children of content-area itself.
+                                 The actual scrolling should be in .essays-page-content.
+                                 Let's keep it clean for now and add if necessary. */
     }
     .content-box {
         width: 100%;
         max-width: 100%;
         margin: 0;
         padding: 24px;
-        min-height: unset; /* Let content dictate height */
-        height: auto;
+        /* min-height: unset; */ /* REMOVED this line */
+        height: 100%; /* CHANGE: from auto */
+        box-sizing: border-box; /* Ensure this is present (it's in global *, so it's fine) */
+        /* display: flex and flex-direction: column are inherited from desktop styles and are good */
     }
     .page.active {
         padding: 0; /* Remove desktop specific padding */
+        /* height: 100% is inherited from desktop and is good */
+        /* overflow-y: auto; /* Not needed here if .essays-page-content handles its own scroll */
     }
     .page-content {
-        text-align: left; /* Default for mobile */
-        padding: 0;
+        text-align: left; 
+        padding: 0; /* Let parent .content-box provide outer padding. */
+        font-size: 1rem; /* Standardize base font size for page content on mobile */
     }
     .contact-link {
         text-align: left;
     }
     .essays-page-content {
-        padding: 24px 0; /* Removed L/R padding, parent .content-box has 24px padding */
-        text-align: left;
+        /* padding: 24px 0; /* Old mobile rule */
+        padding: 0; /* Align with general .page-content for mobile; parent .content-box has 24px padding. */
+        text-align: left; /* Already in existing mobile .essays-page-content specific rule */
+        /* flex-grow: 1; is inherited from .page-content and is good */
+        /* overflow-y: auto; IS INHERITED FROM DESKTOP AND IS KEY */
     }
     .essay-date {
         text-align: left;
@@ -505,24 +535,50 @@ body.dark-mode .responsive-image-container img {
         text-align: left;
     }
     #live-clock {
-        text-align: center; /* Or left, depending on desired mobile layout */
+        font-size: 1rem;
+        text-align: center; 
     }
 
     #page-forbes .page-content,
     #page-contact .page-content {
-        text-align: left; /* Overridden by align-items:center for children below */
-        align-self: stretch; /* Ensure it takes full width of .content-box */
-        width: 100%;
-        margin: 0;
-        padding-top: 15px;
-        padding-left: 0;
-        padding-right: 0;
-        /* Ensure flex properties for centering children are active */
+        /* text-align: left; /* Inherited from .page-content mobile */
+        text-align: center; /* MODIFIED: Ensure text content of children is centered */
+        align-self: stretch; 
+        width: 100%; 
+        margin: 0; 
+        /* padding-top: 15px; */ /* REMOVED to allow true centering */
+        padding-top: 30px; /* ADDED: Increased top padding for spacing */
+        /* padding-left: 0;  /* Covered by .page-content {padding:0;} general mobile rule */
+        /* padding-right: 0; /* Covered by .page-content {padding:0;} general mobile rule */
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        flex-grow: 1; /* Ensure it takes available vertical space */
+        /* justify-content: center; */ /* REMOVED: To avoid full vertical centering if not desired */
+        align-items: center;   /* Horizontal centering for the flex items */
+        flex-grow: 1; 
+        font-size: 1rem; /* Ensure this container also respects/sets the 1rem base */
+    }
+
+    #page-contact .contact-link { /* Explicitly set contact link font size for mobile */
+        font-size: 1rem;
+    }
+
+    /* Essays list font size for mobile */
+    ul.essay-headlines-list a {
+        font-size: 1rem !important; /* Override other media query if necessary */
+    }
+     ul.essay-headlines-list .essay-list-date {
+        font-size: 0.8em; /* Keep date smaller relative to the new 1rem title */
+    }
+
+    #essay-content-container { /* Mobile adjustments for essay view */
+        width: 100%;
+        max-width: 100%;
+        height: 100%; 
+        margin: 0;
+        padding: 20px; /* Mobile padding for essay box */
+    }
+    #essay-display-area {
+        /* padding-right: 0; /* No specific padding needed here if container handles it */
     }
 }
 
@@ -587,12 +643,12 @@ ul.essay-headlines-list a:hover {
     }
 
     ul.essay-headlines-list .essay-list-date {
-        font-size: 0.75em;
+        font-size: 0.75em; /* This will be overridden by 700px query if screen is <= 700px */
         margin-left: 6px; 
     }
 
     ul.essay-headlines-list a {
-        font-size: 0.9em; 
+        font-size: 0.9em; /* This will be overridden by 700px query if screen is <= 700px */
     }
     /* These paddings might conflict with general mobile .essays-page-content */
     /* .page#page-essays .essays-page-content { 
@@ -762,3 +818,80 @@ body.dark-mode .highlight {
 /* Removed old #vanta-background rule with z-index:100 and background-color. */
 /* Removed old body rule that didn't have full width/height and padding-left. */
 /* Consolidated body styles into one primary rule. */
+
+/* Styles for individual essay view (essays.html) */
+/* This container is analogous to .content-box and holds the essay display area */
+.essay-container { /* MODIFIED: from #essay-content-container to .essay-container */
+    width: 850px; 
+    max-width: calc(100% - 48px); /* Desktop: allows for 24px margin on each side */
+    /* height: calc(100% - 48px); */ /* Let's try viewport height minus margins for more robustness */
+    height: calc(100vh - 48px); /* Desktop: viewport height minus 24px margin top & bottom */
+    margin: 24px auto; /* Centering and top/bottom margins */
+    display: flex; 
+    flex-direction: column;
+    background: var(--content-box-bg-light); 
+    padding: 24px; 
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1; 
+    transition: background-color var(--theme-transition-duration) ease;
+    overflow: hidden; /* ADDED: Ensure this container does not scroll */
+}
+
+#essay-display-area {
+    height: 100%; 
+    overflow-y: auto;
+    color: var(--text-color-light);
+    /* Scrollbar hiding */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+#essay-display-area::-webkit-scrollbar {
+    display: none;  /* Webkit browsers */
+}
+
+#page-forbes .page-content,
+#page-contact .page-content {
+    text-align: center; /* MODIFIED: Ensure text content of children is centered */
+    align-self: stretch; 
+    width: 100%; 
+    margin: 0; 
+    /* padding-top: 30px; */ /* REMOVED custom padding from last attempt */
+    padding-top: 15px; /* REVERTED/SET to 15px for potentially better alignment */
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */ /* This was removed, so not full vertical center */
+    justify-content: flex-start; /* ADDED: Align items to the start (top) of the container */
+    align-items: center;   /* Horizontal centering for the flex items */
+    flex-grow: 1; 
+    font-size: 1rem; /* Ensure this container also respects/sets the 1rem base */
+}
+
+#page-contact .contact-link { /* Explicitly set contact link font size for mobile */
+    font-size: 1rem;
+}
+
+@media (max-width: 700px) {
+    /* ... other rules from previous diff for .main-wrapper, .sidebar, .content-area, .content-box ... */
+    
+    .essay-container { /* MODIFIED: from #essay-content-container to .essay-container */
+        width: 100%;
+        max-width: 100%;
+        height: 100%; 
+        margin: 0;
+        padding: 20px; /* Mobile padding for essay box */
+        /* overflow: hidden; /* Ensure it's also hidden on mobile if needed, inherited if not specified */
+    }
+    #essay-display-area {
+        /* padding-right: 0; /* No specific padding needed here if container handles it */
+    }
+}
+
+body.dark-mode .essay-container { /* MODIFIED: from #essay-content-container to .essay-container */
+    background-color: transparent !important; /* Show Vanta */
+}
+
+body.dark-mode #essay-display-area {
+    color: var(--text-color-dark);
+}

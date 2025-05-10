@@ -20,8 +20,46 @@ const vantaFogSettings = {
     zoom: 1.05
 };
 
+// Global SVG Icons for Theme Toggle Button
+const moonIcon = `<svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+const sunIcon = `<svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
 
-// Essay Search State
+// Global Vanta Functions
+function initializeVantaFog() {
+    if (VANTA && typeof VANTA.FOG === 'function') {
+        if (vantaEffect) {
+            vantaEffect.destroy();
+        }
+        vantaEffect = VANTA.FOG(vantaFogSettings);
+    } else {
+        console.error("VANTA.FOG is not available or not loaded yet.");
+    }
+}
+
+function destroyVantaFog() {
+    if (vantaEffect) {
+        vantaEffect.destroy();
+        vantaEffect = null;
+    }
+}
+
+// Global Theme Setting Function
+function setTheme(theme) {
+    const themeToggleButton = document.getElementById('theme-toggle-button');
+    if (theme === 'dark') {
+        document.body.classList.add('dark-mode');
+        if (themeToggleButton && sunIcon) themeToggleButton.innerHTML = sunIcon;
+        localStorage.setItem('theme', 'dark');
+        if (typeof initializeVantaFog === 'function') initializeVantaFog();
+    } else {
+        document.body.classList.remove('dark-mode');
+        if (themeToggleButton && moonIcon) themeToggleButton.innerHTML = moonIcon;
+        localStorage.setItem('theme', 'light');
+        if (typeof destroyVantaFog === 'function') destroyVantaFog();
+    }
+}
+
+// Essay Search State (remains specific to script.js context, not directly theme related)
 let essayMatches = [];
 let currentMatchIndex = -1;
 
@@ -217,88 +255,59 @@ function getPageFromHash() {
     return hash && document.getElementById('page-' + hash) ? hash : 'home';
 }
 
-// --- VANTA FOG Effect Initialization ---
-function initializeVantaFog() {
-    if (VANTA && typeof VANTA.FOG === 'function') {
-        if (vantaEffect) {
-            vantaEffect.destroy();
-        }
-        vantaEffect = VANTA.FOG(vantaFogSettings); // Use the centralized settings object
-    } else {
-        console.error("VANTA.FOG is not available. Make sure vanta.fog.min.js is loaded.");
-    }
-}
-
-function destroyVantaFog() {
-    if (vantaEffect) {
-        vantaEffect.destroy();
-        vantaEffect = null;
-    }
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-    showPage(getPageFromHash());
-    setupEssaySearch(); // Initialize essay search listeners
+    // This listener is primarily for index.html specific setup now
 
-    document.querySelectorAll('.sidebar .link').forEach(link => {
-        link.addEventListener('click', function (event) {
-            const pageName = this.getAttribute('data-page');
-            if (pageName) {
-                event.preventDefault();
-                window.location.hash = pageName;
-                showPage(pageName);
-            } else {
-                showPage('home');
-            }
-        });
-    });
-
-    // Title acts as home button
-    const homeLink = document.getElementById('home-link');
-    if (homeLink) {
-        homeLink.style.cursor = 'pointer';
-        homeLink.addEventListener('click', function (e) {
-            e.preventDefault();
-            window.location.hash = '';
-            showPage('home');
-        });
-    }
-    // Hash change (back/forward)
-    window.addEventListener('hashchange', () => {
+    // Check if we are on index.html (e.g., by checking for a unique element)
+    // For simplicity, we assume script.js is mainly for index.html context for these initializations.
+    // If an element specific to index.html exists, then run these.
+    if (document.getElementById('home-link')) { // home-link is in index.html sidebar
         showPage(getPageFromHash());
-    });
+        setupEssaySearch();
 
-    const themeToggleButton = document.getElementById('theme-toggle-button');
+        document.querySelectorAll('.sidebar .link').forEach(link => {
+            link.addEventListener('click', function (event) {
+                const pageName = this.getAttribute('data-page');
+                if (pageName) {
+                    event.preventDefault();
+                    window.location.hash = pageName;
+                    showPage(pageName);
+                } else {
+                    // If it's an external link or no data-page, let it behave normally or go home
+                    // For now, let's assume direct external links don't call showPage
+                    if (!this.href.startsWith('http')) showPage('home');
+                }
+            });
+        });
 
-    // SVG Icons - stroke set to currentColor, color managed by CSS
-    const moonIcon = `<svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
-    const sunIcon = `<svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+        const homeLink = document.getElementById('home-link');
+        if (homeLink) {
+            homeLink.style.cursor = 'pointer';
+            homeLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                window.location.hash = '';
+                showPage('home');
+            });
+        }
+        window.addEventListener('hashchange', () => {
+            showPage(getPageFromHash());
+        });
 
-    function setTheme(theme) {
-        const themeToggleButton = document.getElementById('theme-toggle-button'); // Ensure button is fetched here
-        if (theme === 'dark') {
-            document.body.classList.add('dark-mode');
-            if (themeToggleButton) themeToggleButton.innerHTML = sunIcon;
-            localStorage.setItem('theme', 'dark');
-            initializeVantaFog(); // Initialize Vanta for dark mode
-        } else {
-            document.body.classList.remove('dark-mode');
-            if (themeToggleButton) themeToggleButton.innerHTML = moonIcon;
-            localStorage.setItem('theme', 'light');
-            destroyVantaFog(); // Destroy Vanta for light mode
+        const preferredTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        if (typeof setTheme === 'function') {
+            setTheme(preferredTheme); // Set initial theme for index.html
+        }
+
+        const themeToggleButton = document.getElementById('theme-toggle-button');
+        if (themeToggleButton) {
+            themeToggleButton.addEventListener('click', () => {
+                const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+                if (typeof setTheme === 'function') {
+                    setTheme(newTheme);
+                }
+            });
         }
     }
-
-    const preferredTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    setTheme(preferredTheme); // Set initial theme
-
-    if (themeToggleButton) {
-        themeToggleButton.addEventListener('click', () => {
-            if (document.body.classList.contains('dark-mode')) {
-                setTheme('light');
-            } else {
-                setTheme('dark');
-            }
-        });
-    }
+    // Note: essays.html will have its own DOMContentLoaded to set its initial theme 
+    // and attach listener to its own theme button, but it will call the global setTheme.
 });

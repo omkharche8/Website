@@ -204,51 +204,53 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.fog.min.js"></script>
     <script src="script.js"></script> <!-- Main script.js now loaded -->
     <script>
-        // Removed local vantaEffect, initializeVantaFog, destroyVantaFog
-
         // JavaScript to load essay content
         document.addEventListener('DOMContentLoaded', function() {
             // Apply theme from localStorage first
             const savedEssayPageTheme = localStorage.getItem('theme');
-            let currentTheme = 'light'; // Default
-            if (savedEssayPageTheme === 'dark') {
-                document.body.classList.add('dark-mode');
-                currentTheme = 'dark';
-                // Call global function from script.js
-                if (typeof initializeVantaFog === 'function') {
-                    initializeVantaFog(); 
+            // let currentTheme = 'light'; // No longer need to track currentTheme locally here
+            
+            // Initial theme and Vanta setup is handled by the global script.js 
+            // if it successfully applies the theme and calls initializeVantaFog on DOMContentLoaded.
+            // However, script.js setTheme might not know which icon set to use (moonIconEssays vs sunIconEssays)
+            // Forcing an initial call to global setTheme to ensure icons and Vanta are correct for this page.
+            if (typeof setTheme === 'function') {
+                if (savedEssayPageTheme) {
+                    setTheme(savedEssayPageTheme);
+                } else {
+                    // Fallback if no theme in local storage, match script.js logic
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    setTheme(prefersDark ? 'dark' : 'light');
                 }
-            } 
+            } else {
+                 // Fallback if global setTheme is not ready: apply class and Vanta manually
+                if (savedEssayPageTheme === 'dark') {
+                    document.body.classList.add('dark-mode');
+                    if (typeof initializeVantaFog === 'function') initializeVantaFog();
+                } // else light mode is default
+            }
 
             // Theme Toggle Button Logic (for essays.html)
             const themeToggleButtonEssays = document.getElementById('theme-toggle-button');
-            const moonIconEssays = `<svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
-            const sunIconEssays = `<svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
-
-            function setButtonIcon(theme) {
-                if(themeToggleButtonEssays) {
-                    themeToggleButtonEssays.innerHTML = (theme === 'dark') ? sunIconEssays : moonIconEssays;
-                }
-            }
-
-            setButtonIcon(currentTheme);
             
+            // Icons are defined in script.js's setTheme function now.
+            // No need for local moonIconEssays, sunIconEssays, or setButtonIcon here.
+
             if (themeToggleButtonEssays) {
                 themeToggleButtonEssays.addEventListener('click', () => {
                     const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
-                    if (newTheme === 'dark') {
-                        document.body.classList.add('dark-mode');
-                        localStorage.setItem('theme', 'dark');
-                        setButtonIcon('dark');
-                        if (typeof initializeVantaFog === 'function') {
-                            initializeVantaFog();
-                        }
+                    if (typeof setTheme === 'function') {
+                        setTheme(newTheme); // Call the global setTheme function
                     } else {
-                        document.body.classList.remove('dark-mode');
-                        localStorage.setItem('theme', 'light');
-                        setButtonIcon('light');
-                        if (typeof destroyVantaFog === 'function') {
-                            destroyVantaFog();
+                        // Fallback minimal toggle if global setTheme is not found (should not happen)
+                        if (newTheme === 'dark') {
+                            document.body.classList.add('dark-mode');
+                            localStorage.setItem('theme', 'dark');
+                            if(typeof initializeVantaFog === 'function') initializeVantaFog();
+                        } else {
+                            document.body.classList.remove('dark-mode');
+                            localStorage.setItem('theme', 'light');
+                            if(typeof destroyVantaFog === 'function') destroyVantaFog();
                         }
                     }
                 });
