@@ -10,18 +10,17 @@
     --button-hover-text-light: #333;
     --essay-date-color-light: #666;
 
-    --bg-color-dark: #1e2022;
-    --text-color-dark: #f0f0f0; /* Slightly off-white for general text */
-    --link-color-dark: #70ab8a; /* Green */
-    --title-color-dark: #ff4f24; /* New Orange */
-    --sidebar-bg-dark: #1e2022;
-    --content-box-bg-dark: #1e2022;
+    --bg-color-dark: #1e2022; /* Base for opaque elements in dark mode */
+    --text-color-dark: #f0f0f0;
+    --link-color-dark: #70ab8a;
+    --title-color-dark: #ff4f24;
+    --sidebar-bg-dark: #1e2022; /* Opaque sidebar background */
+    --content-box-bg-dark: #1e2022; /* Opaque content box background */
     --border-color-dark: #444;
     --button-hover-bg-dark: #333;
     --button-hover-text-dark: #70ab8a;
     --essay-date-color-dark: #aaa;
 
-    /* Transitions */
     --theme-transition-duration: 0.2s;
 }
 
@@ -32,26 +31,79 @@
     box-sizing: border-box;
 }
 
-/* Base styles */
+/* HTML base */
+html {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden; /* Important for Vanta to not cause horizontal scroll */
+    scroll-behavior: smooth;
+}
+
+/* Vanta Background Container - sits behind everything */
+#vanta-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* Base layer */
+}
+
+/* Ensure Vanta's canvas fills the #vanta-background container */
+#vanta-background > canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block; /* Often good for canvas to remove potential whitespace */
+}
+
+/* Consolidated Body styles */
 body {
-    background: var(--bg-color-light);
-    font-family: "Roboto Mono", monospace;
-    min-height: 100vh;
-    padding-left: 180px;
-    position: relative;
+    width: 100%;
+    height: 100%;
+    font-family: 'Roboto Mono', monospace;
     color: var(--text-color-light);
+    background-color: var(--bg-color-light); /* Fallback, Vanta will cover in dark mode */
+    position: relative; /* For stacking context */
     transition: background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease;
+    overflow: hidden; /* Add this to prevent unwanted scrollbars */
 }
 
-/* Main container */
-.container {
-    position: absolute;
-    top: 48px;
-    left: 48px;
-    text-align: left;
+/* Sidebar (Desktop) */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 180px;
+    height: 100vh;
+    background-color: var(--sidebar-bg-light);
+    padding: 48px 32px 0 32px;
+    z-index: 2; /* Above .main-wrapper content, below theme toggle */
+    transition: background-color var(--theme-transition-duration) ease;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
 }
 
-/* Title styles */
+/* Main container (wraps sidebar and content-area in HTML, but not strictly needed for this CSS if body has padding) */
+.main-wrapper {
+    position: relative; /* To sit above Vanta and contain flow */
+    z-index: 1; /* Above Vanta */
+    width: 100%;
+    min-height: 100%; /* Ensure it can be at least full height */
+    padding-left: 180px; /* Space for fixed sidebar on desktop */
+    box-sizing: border-box;
+    background-color: transparent; /* Wrapper itself is transparent */
+}
+
+/* Content Area - Sits to the right of the sidebar */
+.content-area {
+    width: 100%; /* Fills the space provided by .main-wrapper's padding */
+    min-height: 100vh; /* Ensure content area can fill screen height */
+    box-sizing: border-box;
+    /* The content-box inside this will have margins and its own background */
+}
+
+/* Title styles (within sidebar) */
 .title {
     font-family: "Roboto Mono", monospace;
     font-size: clamp(1.2rem, 2.5vw, 1.5rem);
@@ -64,7 +116,7 @@ body {
     transition: color var(--theme-transition-duration) ease;
 }
 
-/* Links container */
+/* Links container (within sidebar) */
 .links {
     display: flex;
     flex-direction: column;
@@ -73,7 +125,7 @@ body {
     margin-bottom: 24px;
 }
 
-/* Link styles */
+/* Link styles (within sidebar) */
 .link {
     font-family: "Roboto Mono", monospace;
     color: var(--link-color-light);
@@ -90,40 +142,10 @@ body {
     text-decoration: underline;
 }
 
-/* Smooth scroll behavior */
-html {
-    scroll-behavior: smooth;
-}
-
-html, body {
-    overflow-x: hidden;
-}
-
-.main-wrapper {
-}
-
-.sidebar {
-    width: 180px;
-    padding: 48px 32px 0 32px;
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100vh;
-    background-color: var(--sidebar-bg-light);
-    z-index: 100;
-    transition: background-color var(--theme-transition-duration) ease;
-}
-
-.content-area {
-    width: 100%;
-    box-sizing: border-box;
-}
-
 #pages {
     width: 100%;
     position: relative;
-    overflow: hidden;
-    min-height: calc(100vh - 48px - 24px);
+    min-height: 100%; /* Ensure it can fill parent */
 }
 
 .page {
@@ -135,7 +157,7 @@ html, body {
     left: 0;
     transform: translateY(5px);
     transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out, visibility 0s linear 0.2s;
-    will-change: opacity, transform;
+    min-height: 100%; /* Fill #pages */
 }
 
 .page.active {
@@ -143,26 +165,21 @@ html, body {
     visibility: visible;
     transform: translateY(0);
     transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out, visibility 0s linear 0s;
-    min-height: calc(100vh - 48px);
-    padding-top: 1px;
-    z-index: 1;
+    z-index: 1; /* Active page on top of other (hidden) pages */
 }
 
 .content-box {
     width: 850px;
     max-width: calc(100% - 96px);
-    height: calc(100vh - 48px - 24px);
+    min-height: calc(100vh - 48px - 24px); /* Based on its own margins */
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
     margin: 48px auto 24px auto;
-    box-sizing: border-box;
-    padding: 0;
     background: var(--content-box-bg-light);
-    position: relative;
-    overflow: hidden;
+    position: relative; /* For stacking context of its children if needed */
     transition: background-color var(--theme-transition-duration) ease;
+    z-index: 1; /* To ensure it sits within .main-wrapper context properly */
+    box-sizing: border-box;
 }
 
 .page-content {
@@ -172,6 +189,10 @@ html, body {
     line-height: 1.5;
     text-align: center;
     width: 100%;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
 }
 
 .contact-link {
@@ -196,20 +217,17 @@ html, body {
 }
 
 /* Essay Page Specific Styles */
-.essays-page-content {
+.essays-page-content { /* This is a .page-content div */
     flex-grow: 1;
     overflow-y: auto;
-    width: 100%;
-    text-align: left;
-    position: static;
-    padding: 0 48px 40px 48px;
+    text-align: left; /* Override default text-align: center from .page-content */
+    padding: 15px 48px 40px 48px; /* Further Reduced top padding to 15px */
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
     &::-webkit-scrollbar { width: 8px; }
     &::-webkit-scrollbar-track { background: transparent; }
     &::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.2); border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
     &::-webkit-scrollbar-thumb:hover { background-color: rgba(0, 0, 0, 0.4); }
-    padding-top: 50px;
 }
 
 .essay-entry {
@@ -220,14 +238,14 @@ html, body {
     font-family: "Roboto Mono", monospace;
     font-size: 1rem;
     font-weight: 700;
-    color: #333;
+    color: #333; /* Specific color, consider var if needed */
     margin-bottom: 0.75rem;
 }
 
 .essay-text p {
     font-family: "Roboto Mono", monospace;
     font-size: 1rem;
-    color: #555;
+    color: #555; /* Specific color, consider var if needed */
     line-height: 1.6;
     margin-bottom: 1rem; /* Space between paragraphs within an essay */
 }
@@ -296,15 +314,16 @@ body.dark-mode .responsive-image-container img {
 /* Essay Search Styles */
 .essay-search-controls {
     position: absolute;
-    top: 15px;
+    top: 15px;  /* Relative to .content-box or .essays-page-content if it creates a stacking context */
     right: 25px;
-    z-index: 10;
+    z-index: 10; /* Above .page-content flow */
     display: flex;
     align-items: center;
     gap: 10px;
-    background-color: var(--bg-color-light);
+    background-color: var(--bg-color-light); /* Needs dark mode var */
     padding: 5px;
     border-radius: 15px;
+    transition: background-color var(--theme-transition-duration) ease;
 }
 
 .search-toggle-button {
@@ -316,7 +335,7 @@ body.dark-mode .responsive-image-container img {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #aaa;
+    color: #aaa; /* Needs dark mode var */
     transition: color 0.2s;
 }
 .search-toggle-button svg {
@@ -325,7 +344,7 @@ body.dark-mode .responsive-image-container img {
     stroke-width: 2.5px;
 }
 .search-toggle-button:hover {
-    color: #333;
+    color: #333; /* Needs dark mode var */
 }
 
 /* Visibility control */
@@ -353,7 +372,7 @@ body.dark-mode .responsive-image-container img {
 }
 
 #essay-search-input {
-    border: 1px solid #eee;
+    border: 1px solid #eee; /* Needs dark mode var */
     border-radius: 15px;
     padding: 6px 12px;
     font-family: "Roboto Mono", monospace;
@@ -361,16 +380,16 @@ body.dark-mode .responsive-image-container img {
     width: 0;
     opacity: 0;
     visibility: hidden;
-    transition: width 0.3s ease, opacity 0.3s ease, visibility 0.3s;
+    transition: width 0.3s ease, opacity 0.3s ease, visibility 0.3s, background-color var(--theme-transition-duration) ease, border-color var(--theme-transition-duration) ease;
     order: -1;
-    background-color: var(--bg-color-light);
+    background-color: var(--bg-color-light); /* Needs dark mode var */
 }
 
 .essay-search-controls.active #essay-search-input {
     width: 220px;
     opacity: 1;
     visibility: visible;
-    border-color: #ccc;
+    border-color: #ccc; /* Needs dark mode var */
 }
 
 /* Navigation Buttons */
@@ -381,7 +400,7 @@ body.dark-mode .responsive-image-container img {
     cursor: pointer;
     padding: 0;
     line-height: 1;
-    color: #ccc;
+    color: #ccc; /* Needs dark mode var */
     transition: color 0.2s, opacity 0.3s, visibility 0.3s;
     opacity: 0;
     visibility: hidden;
@@ -393,27 +412,27 @@ body.dark-mode .responsive-image-container img {
     opacity: 1;
     visibility: visible;
     width: auto;
-    color: #aaa;
+    color: #aaa; /* Needs dark mode var */
 }
 
 .search-nav-button:hover:not(:disabled) {
-    color: #333;
+    color: #333; /* Needs dark mode var */
 }
 
 .search-nav-button:disabled {
-    color: #eee;
+    color: #eee; /* Needs dark mode var */
     cursor: default;
 }
 
 /* Highlighting Style */
-.highlight {
+.highlight { /* This applies to text within essays */
     font-weight: 700;
     text-decoration: underline;
-    text-decoration-color: rgba(85, 85, 85, 0.5);
+    text-decoration-color: rgba(85, 85, 85, 0.5); /* Needs dark mode var if 555 is text color */
     text-decoration-thickness: 1px;
     text-underline-offset: 3px;
     background-color: transparent;
-    color: inherit;
+    color: inherit; /* Good, inherits themed text color */
 }
 
 /* Style for hidden essay entries */
@@ -421,45 +440,46 @@ body.dark-mode .responsive-image-container img {
     display: none;
 }
 
+/* Mobile Styles */
 @media (max-width: 700px) {
     body {
-        padding-left: 0;
+        /* padding-left: 0; Is already 0 from base */
     }
     .main-wrapper {
-        width: 100%;
+        padding-left: 0; /* Remove sidebar padding */
+        overflow-y: visible; /* Allow body to scroll if content overflows */
+        min-height: unset; /* Let content dictate height */
     }
     .sidebar {
         width: 100%;
         height: auto;
-        position: relative;
+        position: relative; /* No longer fixed, part of page flow */
         padding: 24px 24px 0 24px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
+        z-index: auto;
     }
     .content-area {
-        width: 100%;
+        min-height: unset;
     }
     .content-box {
         width: 100%;
         max-width: 100%;
         margin: 0;
-        padding: 0 24px;
+        padding: 24px;
+        min-height: unset; /* Let content dictate height */
         height: auto;
-        min-height: calc(100vh - 48px);
     }
     .page.active {
-        padding: 0;
+        padding: 0; /* Remove desktop specific padding */
     }
     .page-content {
-        text-align: left;
+        text-align: left; /* Default for mobile */
         padding: 0;
     }
     .contact-link {
         text-align: left;
     }
     .essays-page-content {
-        padding: 24px;
+        padding: 24px 0; /* Removed L/R padding, parent .content-box has 24px padding */
         text-align: left;
     }
     .essay-date {
@@ -471,71 +491,71 @@ body.dark-mode .responsive-image-container img {
     .essay-search-controls {
         left: 24px;
         right: 24px;
+        width: auto; /* Allow it to fit content */
+        top: 10px; /* Adjust based on new layout */
     }
     .search-nav-button {
         margin: 0 8px;
     }
     .essay-search-controls.active #essay-search-input {
-        width: calc(100% - 100px);
+        width: calc(100% - 100px); /* Adjust based on button sizes */
     }
     #page-contact .page-content,
     #page-contact .contact-link {
         text-align: left;
     }
     #live-clock {
-        text-align: center;
+        text-align: center; /* Or left, depending on desired mobile layout */
     }
 
-    /* Added for Forbes and Contact page content alignment on mobile */
     #page-forbes .page-content,
     #page-contact .page-content {
-        text-align: left;
-        align-self: stretch; /* Override desktop 'align-self: center' */
-        width: 100%; /* Ensure full width */
-        margin: 0; /* Remove potential centering margins */
-        padding-top: 15px; /* Add vertical spacing from the top */
-        padding-left: 0; /* Align content to the very left of this box */
-        padding-right: 0; /* Align content to the very right of this box */
-        /* box-sizing: border-box; is inherited from global '*' rule */
+        text-align: left; /* Overridden by align-items:center for children below */
+        align-self: stretch; /* Ensure it takes full width of .content-box */
+        width: 100%;
+        margin: 0;
+        padding-top: 15px;
+        padding-left: 0;
+        padding-right: 0;
+        /* Ensure flex properties for centering children are active */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 1; /* Ensure it takes available vertical space */
     }
 }
 
-/* ========================================== */
-/* Styles for Essay Headline List (index.html) */
-/* ========================================== */
-
-/* Ensure the container for the essay list has appropriate padding */
-/* if it's different from other page-content divs */
-.page#page-essays .essays-page-content {
-    padding-top: 10px; /* Adjust as needed, existing padding might be sufficient */
-    /* Consider if you need more specific padding than generic .page-content */
+/* Essay Headline List (index.html) */
+.page#page-essays .essays-page-content { /* This is a more specific selector for the essays list container */
+    /* padding-top: 10px; /* This was already specified in .essays-page-content, ensure no conflict */
 }
 
 ul.essay-headlines-list {
-    list-style-type: none; /* Remove default bullets */
-    padding-left: 0; /* Remove default padding if any from UL */
+    list-style-type: none; 
+    padding-left: 0; 
     margin-top: 0;
     margin-bottom: 0;
 }
 
 ul.essay-headlines-list li {
-    padding-left: 1.2em; /* Add padding to the left of li for the bullet */
-    position: relative; /* Needed for absolute positioning of the pseudo-element */
-    margin-bottom: 0.5rem; /* Keep or adjust existing margin */
+    padding-left: 1.2em; 
+    position: relative; 
+    margin-bottom: 0.5rem; 
 }
 
 ul.essay-headlines-list li::before {
-    content: "•"; /* The bullet character */
-    color: var(--text-color-light); /* Use theme variable for color */
+    content: "•"; 
+    color: var(--text-color-light); 
     position: absolute;
     left: 0;
-    top: 0; /* Adjust if vertical alignment is off, might need a slight tweak depending on line-height */
-    font-size: 1em; /* Match text size or adjust as needed */
-    line-height: inherit; /* Inherit line height from parent li */
+    top: 0; 
+    font-size: 1em; 
+    line-height: inherit; 
 }
 
 ul.essay-headlines-list li:last-child {
-    border-bottom: none;    /* No border for the last item in the list */
+    border-bottom: none;    
     margin-bottom: 0;
 }
 
@@ -548,104 +568,89 @@ ul.essay-headlines-list .essay-list-date {
 
 ul.essay-headlines-list a {
     font-size: 1.05em;       
-    color: var(--link-color-light); /* Headline color */
+    color: var(--link-color-light); 
     text-decoration: none;  
-    font-weight: 400;       /* Normal font-weight, can be 700 if you prefer bold */
+    font-weight: 400;       
     line-height: 1.4;
     transition: color var(--theme-transition-duration) ease;
 }
 
 ul.essay-headlines-list a:hover {
-    color: #0056b3; /* Standard hover, may need dark mode version or var */
+    color: #0056b3; /* Needs dark var */
     text-decoration: underline; 
 }
 
-/* Responsive adjustments for the essay list */
-@media (max-width: 768px) {
+@media (max-width: 768px) { /* This is a different breakpoint from the main mobile one */
     ul.essay-headlines-list li {
-        margin-bottom: 10px; /* Further reduced for mobile */
-        padding-bottom: 6px; /* Further reduced for mobile */
+        margin-bottom: 10px; 
+        padding-bottom: 6px; 
     }
 
     ul.essay-headlines-list .essay-list-date {
         font-size: 0.75em;
-        margin-left: 6px; /* Spacing for inline date in mobile */
+        margin-left: 6px; 
     }
 
     ul.essay-headlines-list a {
-        font-size: 0.9em; /* Reduced font size for mobile titles */
+        font-size: 0.9em; 
     }
-    .page#page-essays .essays-page-content {
-        padding-left: 0; /* Was 15px, to align with sidebar links margin (24px from screen edge via content-box) */
-        padding-right: 0; /* Was 15px, to make list wider */
-    }
+    /* These paddings might conflict with general mobile .essays-page-content */
+    /* .page#page-essays .essays-page-content { 
+        padding-left: 0; 
+        padding-right: 0; 
+    } */
 }
-
-/* Comment for future self: The styles for the full-screen essay viewer */
-/* are currently within essays.html in a <style> tag. */
-/* Consider moving them to this global styles.css if more shared styling is needed */
-/* or if essays.html starts including shared components like the sidebar. */
-/* For now, keeping them separate is fine as essays.html is a distinct view. */
 
 /* Theme Toggle Button */
 #theme-toggle-button {
     position: fixed;
-    bottom: 30px; /* Adjust as needed */
-    left: 32px;  /* Aligns with sidebar's left padding */
-    width: 40px;   /* Fixed width for a squarish button */
-    height: 40px;  /* Fixed height for a squarish button */
-    padding: 8px;  /* Padding around the icon */
-    background-color: var(--sidebar-bg-light);
+    bottom: 30px; 
+    left: 32px;  /* Aligns with sidebar's left padding for desktop */
+    width: 40px;   
+    height: 40px;  
+    padding: 8px;  
+    background-color: var(--sidebar-bg-light); /* Match sidebar, or make it distinct */
     border: 1px solid var(--border-color-light);
-    color: var(--link-color-light); /* Icon inherits this color via currentColor */
+    color: var(--link-color-light); 
     cursor: pointer;
-    border-radius: 4px; /* Keep slightly rounded, or 0 for sharp square */
-    display: flex; /* For centering icon */
-    align-items: center; /* Center icon vertically */
-    justify-content: center; /* Center icon horizontally */
-    z-index: 101; /* Above sidebar (if sidebar is 100) */
-    transition: background-color 0.2s, color 0.2s, border-color var(--theme-transition-duration) ease;
+    border-radius: 4px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    z-index: 101; /* Highest z-index */
+    transition: background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease, border-color var(--theme-transition-duration) ease;
 }
 
 #theme-toggle-button:hover {
     background-color: var(--button-hover-bg-light);
-    /* color var for icon hover can be added if needed, or let CSS var take care of it */
+    /* color var for icon hover can be added if needed */
 }
 
-/* SVG icon styling within the button */
 #theme-toggle-button .theme-icon {
-    width: 20px;  /* Slightly larger icon for the button size */
+    width: 20px;  
     height: 20px;
-    /* vertical-align: middle; no longer needed with flex centering */
 }
 
-/* Hide toggle button on smaller screens */
-@media (max-width: 700px) {
+@media (max-width: 700px) { /* Mobile styles for theme toggle button */
     #theme-toggle-button {
-        /* display: none; REMOVED to make it visible */
-        /* Inherits position: fixed, width, height, padding etc. from desktop rule */
-        left: auto; /* Unset left positioning from desktop */
-        right: 15px;  /* Position from right for mobile - adjusted */
-        bottom: 20px; /* Position from bottom for mobile */
-        /* Consider if width/height/padding needs to be smaller for mobile */
-        /* For example:
-        width: 36px;
-        height: 36px;
-        padding: 6px;
-        */
+        left: auto; 
+        right: 15px;  
+        bottom: 20px; 
     }
-    /* Ensure other mobile-specific styles for the button are not unintentionally overridden */
-    /* The .theme-icon styles should still apply as they are not in a media query */
 }
 
 /* DARK MODE STYLES */
 body.dark-mode {
-    background: var(--bg-color-dark);
+    background-color: transparent !important; /* Body itself is transparent, Vanta shows through */
     color: var(--text-color-dark);
 }
 
+body.dark-mode .main-wrapper {
+    /* No background change needed, it remains transparent */
+}
+
 body.dark-mode .sidebar {
-    background-color: var(--sidebar-bg-dark);
+    background-color: transparent !important; /* Make sidebar transparent to show Vanta */
 }
 
 body.dark-mode .title {
@@ -657,7 +662,7 @@ body.dark-mode .link {
 }
 
 body.dark-mode .content-box {
-    background-color: var(--content-box-bg-dark);
+    background-color: transparent !important; /* Make content-box transparent to show Vanta */
 }
 
 body.dark-mode .page-content {
@@ -672,8 +677,37 @@ body.dark-mode #live-clock {
     color: var(--text-color-dark);
 }
 
-body.dark-mode ul.essay-headlines-list li {
-    border-bottom-color: var(--border-color-dark);
+/* Dark mode for essay search elements */
+body.dark-mode .essay-search-controls {
+    background-color: var(--button-hover-bg-dark); /* A slightly different dark shade */
+}
+body.dark-mode .search-toggle-button {
+    color: var(--essay-date-color-dark); /* Using a muted color */
+}
+body.dark-mode .search-toggle-button:hover {
+    color: var(--link-color-dark); /* Brighter on hover */
+}
+body.dark-mode #essay-search-input {
+    background-color: var(--bg-color-dark);
+    border-color: var(--border-color-dark);
+    color: var(--text-color-dark);
+}
+body.dark-mode #essay-search-input:focus { /* Added focus style */
+    border-color: var(--link-color-dark);
+}
+body.dark-mode .search-nav-button {
+    color: var(--essay-date-color-dark);
+}
+body.dark-mode .search-nav-button:hover:not(:disabled) {
+    color: var(--link-color-dark);
+}
+body.dark-mode .search-nav-button:disabled {
+    color: var(--border-color-dark); /* Very muted */
+}
+
+/* Dark mode for essay list bullets and dates */
+body.dark-mode ul.essay-headlines-list li::before {
+    color: var(--text-color-dark); 
 }
 
 body.dark-mode ul.essay-headlines-list .essay-list-date {
@@ -685,14 +719,15 @@ body.dark-mode ul.essay-headlines-list a {
 }
 
 body.dark-mode ul.essay-headlines-list a:hover {
-    color: var(--link-color-dark); /* Keep green on hover, maybe slightly brighter/dimmer variation? */
-    filter: brightness(1.2); /* Example: make it a bit brighter */
+    color: var(--link-color-dark); 
+    filter: brightness(1.2); 
 }
 
+/* Dark mode for theme toggle button */
 body.dark-mode #theme-toggle-button {
-    background-color: var(--sidebar-bg-dark, #1e2022);
+    background-color: var(--sidebar-bg-dark); /* Match dark sidebar or a specific dark button color */
     border-color: var(--border-color-dark);
-    color: var(--link-color-dark);
+    color: var(--link-color-dark); /* Icon color */
 }
 
 body.dark-mode #theme-toggle-button:hover {
@@ -700,19 +735,30 @@ body.dark-mode #theme-toggle-button:hover {
     color: var(--button-hover-text-dark);
 }
 
-/* Styles for SVG icons if embedded, or if color needs to change */
 body.dark-mode #theme-toggle-button .theme-icon {
-    fill: var(--link-color-dark); /* Assuming SVG uses fill for color */
+    /* fill: var(--link-color-dark); /* If SVG uses fill */
+    stroke: var(--link-color-dark); /* If SVG uses stroke */
 }
 
-/* Ensure center alignment for specific pages in PC view */
-#page-forbes .page-content,
-#page-contact .page-content {
-    text-align: center;
-    align-self: center;
-    font-family: "Roboto Mono", monospace; /* Explicitly ensure font */
+/* Specific Dark Mode Highlighting */
+body.dark-mode .highlight {
+    text-decoration-color: var(--link-color-dark); /* Brighter underline for dark mode */
+    /* Optionally, slightly change background or text color for highlighted part if needed */
 }
 
-body.dark-mode ul.essay-headlines-list li::before {
-    color: var(--text-color-dark); /* Use dark mode theme variable */
+/* Fallback for the .container class if it's still used from old HTML */
+.container { 
+    /* This class was in old CSS. If index.html doesn't use it, it's dead code. */
+    /* Assuming it might have been for an overall content wrapper. */
+    /* Given the current structure, .main-wrapper and .content-area handle this. */
+    /* For safety, if it was meant to constrain width: */
+    /* max-width: 1200px; /* Example */
+    /* margin: 0 auto; /* Example */
 }
+
+/* Remove duplicate/problematic rules explicitly if they existed from previous edits */
+/* The edit tool should replace the whole file, making manual cleanup of old rules less necessary, */
+/* but this comment serves as a reminder of what was fixed. */
+/* Removed old #vanta-background rule with z-index:100 and background-color. */
+/* Removed old body rule that didn't have full width/height and padding-left. */
+/* Consolidated body styles into one primary rule. */

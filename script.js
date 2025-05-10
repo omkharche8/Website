@@ -1,6 +1,25 @@
 // Add any JavaScript functionality here
 let clockInterval = null;
 let currentActivePage = null; // Keep track of the current page
+let vantaEffect = null; // Vanta effect instance
+
+// Centralized Vanta FOG Settings
+const vantaFogSettings = {
+    el: "#vanta-background",
+    mouseControls: true,
+    touchControls: true,
+    gyroControls: false,
+    minHeight: 200.00,
+    minWidth: 200.00,
+    highlightColor: 0x2a2a2a,   // slightly softer highlight
+    midtoneColor: 0x404040,     // smoother middle tone
+    lowlightColor: 0x252a25,    // green-gray hint, very subtle
+    baseColor: 0x1a1a1a,        // soft charcoal base
+    blurFactor: 0.7,
+    speed: 0.03,
+    zoom: 1.05
+};
+
 
 // Essay Search State
 let essayMatches = [];
@@ -198,6 +217,25 @@ function getPageFromHash() {
     return hash && document.getElementById('page-' + hash) ? hash : 'home';
 }
 
+// --- VANTA FOG Effect Initialization ---
+function initializeVantaFog() {
+    if (VANTA && typeof VANTA.FOG === 'function') {
+        if (vantaEffect) {
+            vantaEffect.destroy();
+        }
+        vantaEffect = VANTA.FOG(vantaFogSettings); // Use the centralized settings object
+    } else {
+        console.error("VANTA.FOG is not available. Make sure vanta.fog.min.js is loaded.");
+    }
+}
+
+function destroyVantaFog() {
+    if (vantaEffect) {
+        vantaEffect.destroy();
+        vantaEffect = null;
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     showPage(getPageFromHash());
     setupEssaySearch(); // Initialize essay search listeners
@@ -237,16 +275,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const sunIcon = `<svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
 
     function setTheme(theme) {
+        const themeToggleButton = document.getElementById('theme-toggle-button'); // Ensure button is fetched here
         if (theme === 'dark') {
             document.body.classList.add('dark-mode');
             if (themeToggleButton) themeToggleButton.innerHTML = sunIcon;
             localStorage.setItem('theme', 'dark');
+            initializeVantaFog(); // Initialize Vanta for dark mode
         } else {
             document.body.classList.remove('dark-mode');
             if (themeToggleButton) themeToggleButton.innerHTML = moonIcon;
             localStorage.setItem('theme', 'light');
+            destroyVantaFog(); // Destroy Vanta for light mode
         }
     }
+
+    const preferredTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    setTheme(preferredTheme); // Set initial theme
 
     if (themeToggleButton) {
         themeToggleButton.addEventListener('click', () => {
@@ -256,14 +300,5 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTheme('dark');
             }
         });
-    }
-
-    // Apply saved theme on initial load
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-        setTheme(savedTheme);
-    } else {
-        // Default to light theme and set button accordingly
-        setTheme('light');
     }
 });

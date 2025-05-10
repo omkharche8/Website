@@ -77,12 +77,11 @@
 
         /* Dark Mode Overrides for Essay Viewer */
         body.dark-mode {
-            background-color: var(--bg-color-dark, #1e2022);
+            /* background-color: var(--bg-color-dark, #1e2022); /* Body bg is handled by global styles.css if linked */
             color: var(--text-color-dark, #f0f0f0);
         }
         body.dark-mode .essay-container {
-            background-color: var(--bg-color-dark, #1e2022); /* Match body or be transparent */
-            /* If essay-container had a light bg before, ensure it matches dark mode body now */
+            background-color: transparent !important; /* Make essay container transparent for Vanta */
         }
         body.dark-mode #essay-display-area h3.essay-date {
             color: var(--accent-color-dark, #70ab8a); /* Green for date */
@@ -186,6 +185,7 @@
     </style>
 </head>
 <body>
+    <div id="vanta-background"></div> <!-- Vanta background div -->
     <div class="essay-container">
         <!-- 
             This is the main container for displaying an essay.
@@ -200,7 +200,12 @@
     <a href="index.html#essays" class="go-back-button" aria-label="Go back to essays list">←</a>
     <button id="theme-toggle-button" title="Toggle light/dark theme"><!-- Icon added by JS --></button>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.fog.min.js"></script>
+    <script src="script.js"></script> <!-- Main script.js now loaded -->
     <script>
+        // Removed local vantaEffect, initializeVantaFog, destroyVantaFog
+
         // JavaScript to load essay content
         document.addEventListener('DOMContentLoaded', function() {
             // Apply theme from localStorage first
@@ -209,11 +214,14 @@
             if (savedEssayPageTheme === 'dark') {
                 document.body.classList.add('dark-mode');
                 currentTheme = 'dark';
-            } // No else needed for classList, default is light
+                // Call global function from script.js
+                if (typeof initializeVantaFog === 'function') {
+                    initializeVantaFog(); 
+                }
+            } 
 
             // Theme Toggle Button Logic (for essays.html)
             const themeToggleButtonEssays = document.getElementById('theme-toggle-button');
-            // Define icons locally for this page (could also be shared via a global JS if preferred)
             const moonIconEssays = `<svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
             const sunIconEssays = `<svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
 
@@ -223,7 +231,6 @@
                 }
             }
 
-            // Set initial icon based on loaded theme
             setButtonIcon(currentTheme);
             
             if (themeToggleButtonEssays) {
@@ -233,10 +240,16 @@
                         document.body.classList.add('dark-mode');
                         localStorage.setItem('theme', 'dark');
                         setButtonIcon('dark');
+                        if (typeof initializeVantaFog === 'function') {
+                            initializeVantaFog();
+                        }
                     } else {
                         document.body.classList.remove('dark-mode');
                         localStorage.setItem('theme', 'light');
                         setButtonIcon('light');
+                        if (typeof destroyVantaFog === 'function') {
+                            destroyVantaFog();
+                        }
                     }
                 });
             }
