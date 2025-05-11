@@ -16,7 +16,7 @@ const vantaFogSettings = {
     lowlightColor: 0x252a25,    // green-gray hint, very subtle
     baseColor: 0x1a1a1a,        // soft charcoal base
     blurFactor: 0.7,
-    speed: 0.03,
+    speed: 0.1,
     zoom: 1.05
 };
 
