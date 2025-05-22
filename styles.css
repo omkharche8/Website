@@ -432,8 +432,8 @@ body.dark-mode .responsive-image-container img {
 }
 
 .search-nav-button:disabled {
-    color: #eee; /* Needs dark mode var */
-    cursor: default;
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* Highlighting Style */
@@ -579,6 +579,62 @@ body.dark-mode .responsive-image-container img {
     }
     #essay-display-area {
         /* padding-right: 0; /* No specific padding needed here if container handles it */
+    }
+
+    /* Homepage Bullet Points Mobile Styles - container styling */
+    .homepage-bullet-points {
+        padding: 0; /* Match .essays-page-content mobile padding */
+        /* width: 100%; */ /* Inherited from desktop */
+        /* box-sizing: border-box; */ /* Inherited from desktop */
+    }
+
+    /* REMOVE THE FOLLOWING MOBILE-SPECIFIC RULES as .essay-headlines-list styles should take over */
+    /*
+    .homepage-bullet-points ul {
+        width: 100%; 
+    }
+
+    .homepage-bullet-points li {
+        margin-bottom: 10px;
+        padding-bottom: 6px; 
+        line-height: 1.4; 
+        font-size: 1rem; 
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .homepage-bullet-points li a {
+        display: block; 
+        margin-left: 1.2em; 
+        font-size: 1rem !important; 
+        font-weight: 400; 
+        color: var(--link-color-light); 
+        text-decoration: none; 
+    }
+    */
+
+    /* body.dark-mode .page-content { color: var(--text-color-dark); } */
+
+    #page-contact .page-content,
+    #page-contact .contact-link {
+        text-align: left;
+    }
+
+    body.dark-mode .page-content {
+        color: var(--text-color-dark);
+    }
+
+    /* Dark mode for homepage bullet points - Match essay list headlines */
+    body.dark-mode .homepage-bullet-points li a {
+        color: var(--link-color-dark);
+    }
+
+    body.dark-mode .homepage-bullet-points li::before {
+        color: var(--text-color-dark); /* EXACT MATCH: Essay list bullet color in dark mode */
+    }
+
+    body.dark-mode .contact-link {
+        color: var(--link-color-dark);
     }
 }
 
@@ -802,6 +858,17 @@ body.dark-mode .highlight {
     /* Optionally, slightly change background or text color for highlighted part if needed */
 }
 
+/* Override hover effect for homepage bullet points (which use .essay-headlines-list) */
+.homepage-bullet-points ul.essay-headlines-list a:hover {
+    text-decoration: none; /* Remove underline */
+}
+
+body.dark-mode .homepage-bullet-points ul.essay-headlines-list a:hover {
+    text-decoration: none; /* Remove underline in dark mode too */
+    /* If the brightness filter is also from the main essay list hover, and you want to remove it: */
+    /* filter: none; */ 
+}
+
 /* Fallback for the .container class if it's still used from old HTML */
 .container { 
     /* This class was in old CSS. If index.html doesn't use it, it's dead code. */
@@ -842,6 +909,7 @@ body.dark-mode .highlight {
     height: 100%; 
     overflow-y: auto;
     color: var(--text-color-light);
+    padding-bottom: 100px; /* Added for extra scroll room */
     /* Scrollbar hiding */
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
@@ -893,5 +961,48 @@ body.dark-mode .essay-container { /* MODIFIED: from #essay-content-container to 
 }
 
 body.dark-mode #essay-display-area {
-    color: var(--text-color-dark);
+    /* background-color: var(--content-box-bg-dark); /* Match content box */
+    /* color: var(--text-color-dark); /* Ensure text color is correct */
 }
+
+/* Resetting and simplifying homepage bullet point styles */
+
+/* Remove all previous .homepage-bullet-points ul, li, a, ::before rules. */
+/* The following are the ONLY rules that should exist for .homepage-bullet-points */
+
+/* Homepage Bullet Points CONTAINER Styles - To match .essays-page-content context */
+.homepage-bullet-points {
+    text-align: left;
+    padding: 15px 48px; /* Desktop padding */
+    font-family: "Roboto Mono", monospace; 
+    line-height: 1.4; /* Base line-height */
+    width: 100%; 
+    box-sizing: border-box; 
+}
+
+@media (max-width: 700px) {
+    .homepage-bullet-points {
+        padding: 0; /* Mobile padding - relies on .content-box for 24px side padding */
+    }
+}
+
+/* ALL OTHER STYLES for the list itself (ul.essay-headlines-list, li, a, li::before) */
+/* will now come from the existing .essay-headlines-list rules in this file. */
+
+/* Ensure to manually delete any other .homepage-bullet-points child rules found elsewhere in the file. */
+
+/* ... rest of styles.css file from .highlight or other known good section onwards ... */ 
+/* For example, starting from: */
+
+/* Highlighting Style */
+.highlight { 
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: rgba(85, 85, 85, 0.5); 
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    background-color: transparent;
+    color: inherit; 
+}
+
+/* ... continue with the rest of the original file ... */
