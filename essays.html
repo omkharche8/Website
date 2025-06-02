@@ -24,31 +24,32 @@
         #essay-display-area h3.essay-date {
             /* Style for the date if you bring it over */
             font-size: 0.9em;
-            color: #555; /* Will be overridden in dark mode */
+            color: #555; /* Dark grey for light mode */
             margin-bottom: 20px;
         }
         #essay-display-area h2.essay-title-for-seo { /* Main essay title */
-            color: #28a745; /* Standard green for light mode */
-            font-size: 1.8em; /* Larger font size for main title */
-            margin-bottom: 0.25em; /* Reduced space below main title, before date */
+            color: #333; /* Darker grey for main title in light mode */
+            font-size: 1.8em;
+            margin-bottom: 0.25em;
         }
         #essay-display-area p.essay-summary-for-seo { /* Essay summary */
-            color: #28a745; /* Standard green for light mode */
+            color: #555; /* Dark grey for summary in light mode */
             font-style: italic;
             font-size: 1em;
             margin-top: 0;
-            margin-bottom: 1.5em; /* Space after summary, before main text */
+            margin-bottom: 1.5em;
         }
         #essay-display-area .essay-text p {
             /* Style for essay paragraphs */
             line-height: 1.6;
             margin-bottom: 1em;
+            /* Default text color for paragraphs will be inherited or set by body.dark-mode */
         }
-        #essay-display-area .essay-text h3 { /* New rule for subheadings */
-            color: #28a745; /* A standard green for light mode */
-            margin-top: 2em;    /* More space above subheadings */
-            margin-bottom: 0.75em; /* Space below subheading, before paragraph */
-            font-size: 1.2em; /* Slightly larger than normal text, adjust as needed */
+        #essay-display-area .essay-text h3 { /* Subheadings */
+            color: #444; /* Dark grey for subheadings in light mode */
+            margin-top: 2em;
+            margin-bottom: 0.75em;
+            font-size: 1.2em;
         }
 
         /* Responsive adjustments */
@@ -108,12 +109,12 @@
             color: var(--accent-color-dark, #70ab8a);
         }
         body.dark-mode #essay-display-area h3.essay-date {
-            color: var(--accent-color-dark, #70ab8a); /* Green for date */
+            color: var(--accent-color-dark, #70ab8a); /* Green for date in dark mode */
         }
         body.dark-mode #essay-display-area .essay-text p {
             color: var(--text-color-dark, #f0f0f0); /* General light text for paragraphs */
         }
-        body.dark-mode #essay-display-area .essay-text h3 { /* New rule for subheadings in dark mode */
+        body.dark-mode #essay-display-area .essay-text h3 { /* Subheadings in dark mode */
             color: var(--accent-color-dark, #70ab8a); /* Use existing accent green for dark mode */
         }
         body.dark-mode .go-back-button {
