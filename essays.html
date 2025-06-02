@@ -256,45 +256,77 @@
                 });
             }
             
-            const displayArea = document.getElementById('essay-display-area');
-            if (!displayArea) {
-                console.error('Error: Essay display area not found.');
-                return;
-            }
-
-            // Get the essay file name from the URL query parameter (e.g., ?load=essay1.html)
+            const essayDisplayArea = document.getElementById('essay-display-area');
             const params = new URLSearchParams(window.location.search);
             const essayFile = params.get('load');
 
-            if (essayFile) {
-                // Construct the path to the essay file
-                // Essays are expected to be in an 'essays_content' subdirectory
-                const essayPath = 'essays_content/' + essayFile;
+            if (essayFile && essayDisplayArea) {
+                // Construct the full path to the essay file
+                const essayPath = `essays_content/${essayFile}`;
 
                 fetch(essayPath)
                     .then(response => {
                         if (!response.ok) {
-                            throw new Error('Network response was not ok: ' + response.statusText);
+                            throw new Error(`HTTP error! status: ${response.status}`);
                         }
                         return response.text();
                     })
-                    .then(htmlContent => {
-                        // Inject the fetched HTML content into the display area
-                        displayArea.innerHTML = htmlContent;
-                        // Remove potential previous loaded class to reset transition if needed
-                        displayArea.classList.remove('loaded'); 
-                        // Add class via rAF to trigger transition AFTER content is set
-                        requestAnimationFrame(() => {
-                            displayArea.classList.add('loaded');
-                        });
+                    .then(html => {
+                        essayDisplayArea.innerHTML = html;
+                        essayDisplayArea.classList.add('loaded'); // For fade-in
+
+                        // SEO Updates - Enhanced to look for specific SEO elements first
+                        const dedicatedTitleElement = essayDisplayArea.querySelector('h2.essay-title-for-seo');
+                        const dedicatedSummaryElement = essayDisplayArea.querySelector('p.essay-summary-for-seo');
+                        const essayDateElement = essayDisplayArea.querySelector('h3.essay-date');
+                        const fallbackHeadlineElement = essayDisplayArea.querySelector('h3.essay-date + .essay-text p:first-of-type, .essay-text p:first-of-type');
+
+                        let pageTitle = "Essay"; // Default title
+                        let metaDescription = "An essay by Om Kharche."; // Default description
+
+                        if (dedicatedTitleElement && dedicatedTitleElement.textContent.trim()) {
+                            pageTitle = dedicatedTitleElement.textContent.trim();
+                        } else if (fallbackHeadlineElement && fallbackHeadlineElement.textContent.trim()) {
+                            // Fallback to first paragraph if no dedicated title
+                            pageTitle = fallbackHeadlineElement.textContent.trim().substring(0, 60);
+                            if (essayDateElement && essayDateElement.textContent.trim()) {
+                                pageTitle = `${fallbackHeadlineElement.textContent.trim().substring(0,50)} | ${essayDateElement.textContent.trim()}`;
+                            } else {
+                                pageTitle = fallbackHeadlineElement.textContent.trim().substring(0,60) + "...";
+                            }
+                        } else if (essayDateElement && essayDateElement.textContent.trim()) {
+                            pageTitle = `Essay - ${essayDateElement.textContent.trim()}`;
+                        }
+                        document.title = pageTitle;
+
+                        if (dedicatedSummaryElement && dedicatedSummaryElement.textContent.trim()) {
+                            metaDescription = dedicatedSummaryElement.textContent.trim().substring(0, 160);
+                        } else if (fallbackHeadlineElement && fallbackHeadlineElement.textContent.trim()) {
+                            // Fallback to first paragraph if no dedicated summary
+                            metaDescription = fallbackHeadlineElement.textContent.trim().substring(0, 160);
+                        }
+
+                        // Update or create meta description tag
+                        let metaDescriptionTag = document.querySelector('meta[name="description"]');
+                        if (!metaDescriptionTag) {
+                            metaDescriptionTag = document.createElement('meta');
+                            metaDescriptionTag.setAttribute('name', 'description');
+                            document.getElementsByTagName('head')[0].appendChild(metaDescriptionTag);
+                        }
+                        metaDescriptionTag.setAttribute('content', metaDescription);
+
+                        // Initialize Vanta if it hasn't been
+                        if (typeof initializeVantaFog === 'function' && !window.vantaEffect) {
+                            initializeVantaFog();
+                        }
                     })
                     .catch(error => {
                         console.error('Error loading essay:', error);
-                        displayArea.innerHTML = '<p>Sorry, could not load the essay. Please check the link or try again later.</p>';
+                        essayDisplayArea.innerHTML = '<p>Sorry, could not load the essay. Please check the link or try again later.</p>';
                     });
             } else {
                 // If no specific essay is requested, display a default message or guide
-                displayArea.innerHTML = '<p>No essay specified. Please select an essay from the list.</p>';
+                essayDisplayArea.innerHTML = '<p>No essay specified. Please select an essay from the list.</p>';
                 // Or, you could redirect back to index.html or show a list here too.
             }
         });
