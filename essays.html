@@ -24,13 +24,31 @@
         #essay-display-area h3.essay-date {
             /* Style for the date if you bring it over */
             font-size: 0.9em;
-            color: #555;
+            color: #555; /* Will be overridden in dark mode */
             margin-bottom: 20px;
+        }
+        #essay-display-area h2.essay-title-for-seo { /* Main essay title */
+            color: #28a745; /* Standard green for light mode */
+            font-size: 1.8em; /* Larger font size for main title */
+            margin-bottom: 0.25em; /* Reduced space below main title, before date */
+        }
+        #essay-display-area p.essay-summary-for-seo { /* Essay summary */
+            color: #28a745; /* Standard green for light mode */
+            font-style: italic;
+            font-size: 1em;
+            margin-top: 0;
+            margin-bottom: 1.5em; /* Space after summary, before main text */
         }
         #essay-display-area .essay-text p {
             /* Style for essay paragraphs */
             line-height: 1.6;
             margin-bottom: 1em;
+        }
+        #essay-display-area .essay-text h3 { /* New rule for subheadings */
+            color: #28a745; /* A standard green for light mode */
+            margin-top: 2em;    /* More space above subheadings */
+            margin-bottom: 0.75em; /* Space below subheading, before paragraph */
+            font-size: 1.2em; /* Slightly larger than normal text, adjust as needed */
         }
 
         /* Responsive adjustments */
@@ -83,11 +101,20 @@
         body.dark-mode .essay-container {
             background-color: transparent !important; /* Make essay container transparent for Vanta */
         }
+        body.dark-mode #essay-display-area h2.essay-title-for-seo { /* Main essay title in dark mode */
+            color: var(--accent-color-dark, #70ab8a);
+        }
+        body.dark-mode #essay-display-area p.essay-summary-for-seo { /* Essay summary in dark mode */
+            color: var(--accent-color-dark, #70ab8a);
+        }
         body.dark-mode #essay-display-area h3.essay-date {
             color: var(--accent-color-dark, #70ab8a); /* Green for date */
         }
         body.dark-mode #essay-display-area .essay-text p {
             color: var(--text-color-dark, #f0f0f0); /* General light text for paragraphs */
+        }
+        body.dark-mode #essay-display-area .essay-text h3 { /* New rule for subheadings in dark mode */
+            color: var(--accent-color-dark, #70ab8a); /* Use existing accent green for dark mode */
         }
         body.dark-mode .go-back-button {
             background-color: var(--sidebar-bg-dark); /* Darker button background - updated */
