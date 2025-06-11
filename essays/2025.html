@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>theory of seeds & landmines</title>
+    <meta name="description" content="Exploring how successful people (especially outsiders) navigate through multiple verticals in life">
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        /* Basic styling for full-page essay display */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Roboto Mono', monospace;
+        }
+        .essay-container {
+            width: 100%;
+            min-height: 100vh;
+            box-sizing: border-box;
+            padding: 20px 40px;
+            overflow-y: auto;
+            background-color: var(--bg-color-light);
+        }
+        #essay-display-area h3.essay-date {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        #essay-display-area h2.essay-title-for-seo {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 0.25em;
+        }
+        #essay-display-area p.essay-summary-for-seo {
+            color: #555;
+            font-style: italic;
+            font-size: 1em;
+            margin-top: 0;
+            margin-bottom: 1.5em;
+        }
+        #essay-display-area .essay-text p {
+            line-height: 1.6;
+            margin-bottom: 1em;
+        }
+        #essay-display-area .essay-text h3 {
+            color: #444;
+            margin-top: 2em;
+            margin-bottom: 0.75em;
+            font-size: 1.2em;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .essay-container {
+                padding: 15px 20px;
+            }
+            #essay-display-area h3.essay-date {
+                font-size: 0.85em;
+            }
+        }
+
+        /* Go Back Button Styles */
+        .go-back-button {
+            position: fixed;
+            bottom: 30px;
+            left: 32px;
+            width: 40px;
+            height: 40px;
+            padding: 8px;
+            background-color: var(--bg-color-light);
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            font-family: 'Roboto Mono', monospace;
+            border: 1px solid var(--border-color-light, #ccc);
+            transition: background-color 0.2s;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            line-height: 1;
+        }
+
+        .go-back-button:hover {
+            background-color: var(--button-hover-bg-light);
+        }
+
+        /* Responsive adjustments for the go-back button */
+        @media (max-width: 700px) {
+            .go-back-button {
+                bottom: 20px;
+                left: 15px;
+                padding: 7px 12px;
+                font-size: 0.85em;
+            }
+        }
+
+        /* Dark Mode Overrides */
+        body.dark-mode {
+            color: var(--text-color-dark, #f0f0f0);
+        }
+        body.dark-mode .essay-container {
+            background-color: transparent !important;
+        }
+        body.dark-mode #essay-display-area h2.essay-title-for-seo {
+            color: var(--accent-color-dark, #70ab8a);
+        }
+        body.dark-mode #essay-display-area p.essay-summary-for-seo {
+            color: var(--accent-color-dark, #70ab8a);
+        }
+        body.dark-mode #essay-display-area h3.essay-date {
+            color: var(--accent-color-dark, #70ab8a);
+        }
+        body.dark-mode #essay-display-area .essay-text p {
+            color: var(--text-color-dark, #f0f0f0);
+        }
+        body.dark-mode #essay-display-area .essay-text h3 {
+            color: var(--accent-color-dark, #70ab8a);
+        }
+        body.dark-mode .go-back-button {
+            background-color: var(--sidebar-bg-dark);
+            color: var(--accent-color-dark, #70ab8a);
+            border: 1px solid var(--accent-color-dark, #70ab8a);
+        }
+        body.dark-mode .go-back-button:hover {
+            background-color: var(--button-hover-bg-dark);
+            color: var(--accent-color-dark, #70ab8a);
+            filter: brightness(1.1);
+        }
+
+        /* Styling for Theme Toggle Button */
+        #theme-toggle-button {
+            position: fixed;
+            bottom: 30px;
+            right: 32px;
+            left: auto;
+            width: 40px;
+            height: 40px;
+            padding: 8px;
+            background-color: var(--sidebar-bg-light);
+            border: 1px solid #aaa;
+            color: var(--link-color-light, #555);
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: background-color 0.2s, color 0.2s, border-color var(--theme-transition-duration, 0.3s) ease;
+        }
+
+        /* Responsive adjustments for theme toggle button */
+        @media (max-width: 700px) {
+            #theme-toggle-button {
+                bottom: 20px;
+                right: 15px;
+            }
+        }
+
+        #theme-toggle-button:hover {
+            background-color: var(--button-hover-bg-light, #f0f0f0);
+        }
+
+        #theme-toggle-button .theme-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Dark Mode Overrides for Theme Button */
+        body.dark-mode #theme-toggle-button {
+            background-color: var(--sidebar-bg-dark, #1e2022);
+            border: 1px solid var(--accent-color-dark, #70ab8a);
+            color: var(--link-color-dark, #70ab8a);
+        }
+
+        body.dark-mode #theme-toggle-button:hover {
+            background-color: var(--button-hover-bg-dark, #333);
+            color: var(--button-hover-text-dark, #70ab8a);
+        }
+
+        #essay-display-area {
+            opacity: 0;
+            transform: translateY(5px);
+            transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+        }
+
+        #essay-display-area.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div id="vanta-background"></div>
+    <div class="essay-container">
+        <div id="essay-display-area">
+            <h2 class="essay-title-for-seo">theory of seeds & landmines</h2>
+            <h3 class="essay-date">11 june 2025</h3> 
+
+            <p class="essay-summary-for-seo">Exploring how successful people (especially outsiders) navigate through multiple verticals in life</p>
+
+            <div class="essay-text">
+                <p>My friend Nishad and I were on a call yesterday, and we may have cracked the core strategy behind how people succeed across different areas of life.</p>
+                <p>Let's break down the difference between 'sowing seeds for the future' vs. 'planting landmines for the future'.</p>
+
+                <h3>Seeds</h3>
+                <p>Successful people plant seeds across different areas of life — skills, habits, relationships — and reap the rewards later. No one becomes a leader overnight. 
+                  <br>Take Donald Trump, for example. <br>Though he started as a real estate developer, his rise to the U.S. Presidency — twice — wasn't random.
+                  In the late '90s and 2000s, he became more public, launched The Apprentice, built a strong personal brand, and slowly positioned himself for leadership.
+                  It was a long game — and he played it.
+                <br> Building a public image is a seed for future opportunities. No one — maybe not even Trump himself — knew it would lead to the Presidency. But when he finally made that decision, the odds were in his favour.
+                <br> Why? <br> <br>
+                Because he had spent over a decade shaping his brand, presence, and influence — long before the opportunity even existed.</p>
+                
+                <h3>Landmines</h3>
+                <p>Now let's talk about the opposite — planting landmines.<br> These are the decisions people make when few or no odds are in their favour.<br> They haven't prepared, practiced, or built anything beforehand. Imagine suddenly deciding to become an artist, a dancer, or join the armed forces — it doesn't work that way, right?<br> That's the point.
+                    <br><br>
+                    We all plant both seeds and landmines in our lives — often without realizing it.
+                    Many decisions are based on the present, with no thought for the future.<br>
+                    Then, when failure strikes, and there's no one left to blame, we turn on ourselves.<br>
+                    That's when the compounding effect of those landmines kicks in — and eventually, they explode.</p>
+                
+                <h3>The Solution (not verified, but statistically approved)</h3>
+                <p>Set a theme for your life — because you can't do everything, and that's okay.<br> Forget the old idea of working till 60 and retiring. If you're ambitious, it's time to think with logic.
+                    
+                    <br><br>
+                    Your strengths should be world-class. Because sometimes, one great skill is all you need.<br>
+                    Steve Jobs was an innovator.
+                    Steve Wozniak was a coder.
+                    Jony Ive was a designer.
+                    Each of them is remembered for one iconic skill.
+                    
+                    <br><br>
+                    But don't stop at just career.
+                    Plant seeds in other areas of life too — relationships, happiness, and health.<br>
+                    For relationships, maybe it's having better thoughts, reading books, or just understanding people deeply.
+                    For happiness, it's about shifting your perspective.
+                    Study history.
+                    Match your own struggles with those who've come before you — you'll learn from their regrets, not just their victories.
+                    
+                    <br><br>
+                    So plant seeds. Everywhere.
+                    Grow trees for your future.
+                    Because if you don't — one day you'll wake up trapped in a field of landmines, with no way out when they all explode.</p>
+
+                    <p>For me, I've chosen entrepreneurship as my path. That instantly puts me in the entrepreneurship circle — which means I need to master the skills that live in that space: leadership, sales, marketing, and more.<br>
+                    Understand this — being bad at even one of these can hold you back. Being average is fine, but bad? It puts you at a real disadvantage.<br>
+                    So, get gutsy. Practice every skill to the point of embarrassment.
+                    Find your weak spots, make them average — and then go all in on your strengths.</p>
+            </div>
+        </div>
+    </div>
+
+    <a href="../index.html#essays" class="go-back-button" aria-label="Go back to essays list">←</a>
+    <button id="theme-toggle-button" title="Toggle light/dark theme"><!-- Icon added by JS --></button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.fog.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            
+            if (typeof setTheme === 'function') {
+                if (savedTheme) {
+                    setTheme(savedTheme);
+                } else {
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    setTheme(prefersDark ? 'dark' : 'light');
+                }
+            } else {
+                if (savedTheme === 'dark') {
+                    document.body.classList.add('dark-mode');
+                    if (typeof initializeVantaFog === 'function') initializeVantaFog();
+                }
+            }
+
+            const themeToggleButton = document.getElementById('theme-toggle-button');
+            if (themeToggleButton) {
+                themeToggleButton.addEventListener('click', () => {
+                    const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+                    if (typeof setTheme === 'function') {
+                        setTheme(newTheme);
+                    } else {
+                        if (newTheme === 'dark') {
+                            document.body.classList.add('dark-mode');
+                            localStorage.setItem('theme', 'dark');
+                            if(typeof initializeVantaFog === 'function') initializeVantaFog();
+                        } else {
+                            document.body.classList.remove('dark-mode');
+                            localStorage.setItem('theme', 'light');
+                            if(typeof destroyVantaFog === 'function') destroyVantaFog();
+                        }
+                    }
+                });
+            }
+            
+            const essayDisplayArea = document.getElementById('essay-display-area');
+            if (essayDisplayArea) {
+                essayDisplayArea.classList.add('loaded');
+                
+                if (typeof initializeVantaFog === 'function' && !window.vantaEffect) {
+                    initializeVantaFog();
+                }
+            }
+        });
+    </script>
+</body>
+</html> 
