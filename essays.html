@@ -290,7 +290,7 @@
 
             if (essayFile && essayDisplayArea) {
                 // Construct the full path to the essay file
-                const essayPath = `essays_content/${essayFile}`;
+                const essayPath = `${essayFile}`;
 
                 fetch(essayPath)
                     .then(response => {
