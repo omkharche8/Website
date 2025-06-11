@@ -231,56 +231,30 @@
     </div>
 
     <a href="../index.html#essays" class="go-back-button" aria-label="Go back to essays list">←</a>
-    <button id="theme-toggle-button" title="Toggle light/dark theme"><!-- Icon added by JS --></button>
+    <button id="theme-toggle-button" title="Toggle light/dark theme">Toggle Theme</button>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.fog.min.js"></script>
-    <script src="script.js"></script>
+    <script src="../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = localStorage.getItem('theme');
-            
-            if (typeof setTheme === 'function') {
-                if (savedTheme) {
-                    setTheme(savedTheme);
-                } else {
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    setTheme(prefersDark ? 'dark' : 'light');
-                }
-            } else {
-                if (savedTheme === 'dark') {
-                    document.body.classList.add('dark-mode');
-                    if (typeof initializeVantaFog === 'function') initializeVantaFog();
-                }
-            }
+            // Initialize theme
+            const preferredTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            setTheme(preferredTheme);
 
+            // Set up theme toggle button
             const themeToggleButton = document.getElementById('theme-toggle-button');
             if (themeToggleButton) {
                 themeToggleButton.addEventListener('click', () => {
                     const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
-                    if (typeof setTheme === 'function') {
-                        setTheme(newTheme);
-                    } else {
-                        if (newTheme === 'dark') {
-                            document.body.classList.add('dark-mode');
-                            localStorage.setItem('theme', 'dark');
-                            if(typeof initializeVantaFog === 'function') initializeVantaFog();
-                        } else {
-                            document.body.classList.remove('dark-mode');
-                            localStorage.setItem('theme', 'light');
-                            if(typeof destroyVantaFog === 'function') destroyVantaFog();
-                        }
-                    }
+                    setTheme(newTheme);
                 });
             }
             
+            // Initialize essay display area
             const essayDisplayArea = document.getElementById('essay-display-area');
             if (essayDisplayArea) {
                 essayDisplayArea.classList.add('loaded');
-                
-                if (typeof initializeVantaFog === 'function' && !window.vantaEffect) {
-                    initializeVantaFog();
-                }
             }
         });
     </script>
