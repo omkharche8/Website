@@ -259,7 +259,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.fog.min.js"></script>
     <script src="../script.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        window.onload = function() {
             // Initialize theme
             const preferredTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
             setTheme(preferredTheme);
@@ -278,7 +278,7 @@
             if (essayDisplayArea) {
                 essayDisplayArea.classList.add('loaded');
             }
-        });
+        };
     </script>
 </body>
 </html> 
