@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rewiring your dopamine</title>
+    <meta name="description" content="Exploring how successful people (especially outsiders) navigate through multiple verticals in life">
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        /* Basic styling for full-page essay display */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Roboto Mono', monospace;
+        }
+        .essay-container {
+            width: 100%;
+            min-height: 100vh;
+            box-sizing: border-box;
+            padding: 20px 40px;
+            overflow-y: auto;
+            background-color: var(--bg-color-light);
+        }
+        #essay-display-area h3.essay-date {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        #essay-display-area h2.essay-title-for-seo {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 0.25em;
+        }
+        #essay-display-area p.essay-summary-for-seo {
+            color: #555;
+            font-style: italic;
+            font-size: 1em;
+            margin-top: 0;
+            margin-bottom: 1.5em;
+        }
+        #essay-display-area .essay-text p {
+            line-height: 1.6;
+            margin-bottom: 1em;
+        }
+        #essay-display-area .essay-text h3 {
+            color: #444;
+            margin-top: 2em;
+            margin-bottom: 0.75em;
+            font-size: 1.2em;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .essay-container {
+                padding: 15px 20px;
+            }
+            #essay-display-area h3.essay-date {
+                font-size: 0.85em;
+            }
+        }
+
+        /* Go Back Button Styles */
+        .go-back-button {
+            position: fixed;
+            bottom: 30px;
+            left: 32px;
+            width: 40px;
+            height: 40px;
+            padding: 8px;
+            background-color: var(--bg-color-light);
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            font-family: 'Roboto Mono', monospace;
+            border: 1px solid var(--border-color-light, #ccc);
+            transition: background-color 0.2s;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            line-height: 1;
+        }
+
+        .go-back-button:hover {
+            background-color: var(--button-hover-bg-light);
+        }
+
+        /* Responsive adjustments for the go-back button */
+        @media (max-width: 700px) {
+            .go-back-button {
+                bottom: 20px;
+                left: 15px;
+                padding: 7px 12px;
+                font-size: 0.85em;
+            }
+        }
+
+        /* Dark Mode Overrides */
+        body.dark-mode {
+            color: var(--text-color-dark, #f0f0f0);
+        }
+        body.dark-mode .essay-container {
+            background-color: transparent !important;
+        }
+        body.dark-mode #essay-display-area h2.essay-title-for-seo {
+            color: var(--accent-color-dark, #70ab8a);
+        }
+        body.dark-mode #essay-display-area p.essay-summary-for-seo {
+            color: var(--accent-color-dark, #70ab8a);
+        }
+        body.dark-mode #essay-display-area h3.essay-date {
+            color: var(--accent-color-dark, #70ab8a);
+        }
+        body.dark-mode #essay-display-area .essay-text p {
+            color: var(--text-color-dark, #f0f0f0);
+        }
+        body.dark-mode #essay-display-area .essay-text h3 {
+            color: var(--accent-color-dark, #70ab8a);
+        }
+        body.dark-mode .go-back-button {
+            background-color: var(--sidebar-bg-dark);
+            color: var(--accent-color-dark, #70ab8a);
+            border: 1px solid var(--accent-color-dark, #70ab8a);
+        }
+        body.dark-mode .go-back-button:hover {
+            background-color: var(--button-hover-bg-dark);
+            color: var(--accent-color-dark, #70ab8a);
+            filter: brightness(1.1);
+        }
+
+        /* Styling for Theme Toggle Button */
+        #theme-toggle-button {
+            position: fixed;
+            bottom: 30px;
+            right: 32px;
+            left: auto;
+            width: 40px;
+            height: 40px;
+            padding: 8px;
+            background-color: var(--sidebar-bg-light);
+            border: 1px solid #aaa;
+            color: var(--link-color-light, #555);
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: background-color 0.2s, color 0.2s, border-color var(--theme-transition-duration, 0.3s) ease;
+        }
+
+        /* Responsive adjustments for theme toggle button */
+        @media (max-width: 700px) {
+            #theme-toggle-button {
+                bottom: 20px;
+                right: 15px;
+            }
+        }
+
+        #theme-toggle-button:hover {
+            background-color: var(--button-hover-bg-light, #f0f0f0);
+        }
+
+        #theme-toggle-button .theme-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Dark Mode Overrides for Theme Button */
+        body.dark-mode #theme-toggle-button {
+            background-color: var(--sidebar-bg-dark, #1e2022);
+            border: 1px solid var(--accent-color-dark, #70ab8a);
+            color: var(--link-color-dark, #70ab8a);
+        }
+
+        body.dark-mode #theme-toggle-button:hover {
+            background-color: var(--button-hover-bg-dark, #333);
+            color: var(--button-hover-text-dark, #70ab8a);
+        }
+
+        #essay-display-area {
+            opacity: 0;
+            transform: translateY(5px);
+            transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+        }
+
+        #essay-display-area.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div id="vanta-background"></div>
+    <div class="essay-container">
+        <div id="essay-display-area">
+            <h2 class="essay-title-for-seo">wiring your dopamine receptors, the right way</h2>
+            <h3 class="essay-date">1 july 2025</h3> 
+
+            <p class="essay-summary-for-seo">Understanding why we enjoy things, which don't really make sense</p>
+
+            <div class="essay-text">
+                <p>Was watching a few interviews of some successful people, especially the one in their 50s and still have the continuous drive to do more.</p>
+                <p>These people seem to enjoy things that don't really make sense, like working out, eating healthy, meditating, etc.</p>
+
+                <h3>Dopamine is a flexible chemical</h3>
+                <p>This is a chemical your body releases when you do something you enjoy. It's a signal to your brain that you're doing something good for yourself. Texting your girlfriend gives you a dopamine hit. So does getting a new laptop. 
+                    <br>
+                    But the interesting part is, it's flexible. Your brain doesn't inherently know what's truly good for you. You can trick it into associating pleasure with things that may not seem enjoyable at first but have positive outcomes—like exams. 
+                    <br><br>
+                    When you clear an exam, you get a dopamine hit, just like you do when drinking a glass of beer. However, the effort required to clear an exam is far greater than simply drinking a beer.
+                </p>
+                
+                
+                <h3>How to rewire your dopamine receptors</h3>
+                <p>Think retrospectively. How cool would it be to say, at the age of 90, that you never had a glass of beer in your life? Call me crazy, but that's just how I see it. You know alcohol is bad for you. In my opinion, it's one of the worst things ever put into production.
+                    <br> Let's start idolizing healthy lifestyles. Read and learn about people who lead disciplined lives. Take Mammootty from Malayalam cinema, for example—still playing lead roles at the age of 73 and looking like he's in his 40s, all thanks to an exceptionally clean diet.
+                    <br> The earlier you realize this, the better. If you have any chronic habits that are harmful, change them. If they compound over time, things can spiral out of control. Many people end up with heart and liver diseases—that’s seriously messed up. You may not fully understand how severe and mentally exhausting these conditions are unless someone close to you experiences them.
+                    <br><br>
+                    So, read as much as you can to understand what to avoid at all costs. It will keep you safe and make your life significantly better.
+                </p>                
+                
+                <h3>Gaslighting is common</h3>
+                <p>You know, when people become rich and successful, they join the top 1% of the crowd. Now, that becomes a big problem if they want to stay relatable to the general public.
+
+                    <br><br>
+                    The key point to understand here is that if someone is successful, there's a 100% chance they've worked harder than 99% of the population. But the common public doesn’t see it that way. They find a million reasons to attribute success to luck or other non-hard work factors.
+                    <br>
+                    So what do successful people do? They gaslight. They say things like, “I have the same habits as you. I’m just like you. I’m no different.” This makes the general crowd feel more comfortable with that person’s success, and they start believing their own lifestyle is normal or sufficient. A health-conscious actor promoting alcohol? People think, “He must be drinking it too, right?” — HELL NO. He has a life with goals and purpose, far beyond what the average person imagines. But we fail to recognize this gaslighting — and that’s where the problem begins.
+                    <br><br>
+                    So, please rewire your brain to see through the gaslighting and logically idolize the habits that align with your long-term goals. If you believe your life's purpose is just to live, enjoy, and have fun with no real contribution or responsibility — no one’s coming to stop you. But remember, you were born on this earth to make a difference, not to blindly consume its resources without purpose. 
+                </p>
+                
+            </div>
+        </div>
+    </div>
+
+    <a href="../index.html#essays" class="go-back-button" aria-label="Go back to essays list">←</a>
+    <button id="theme-toggle-button" title="Toggle light/dark theme">Toggle Theme</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.fog.min.js"></script>
+    <script src="../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize theme
+            const preferredTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            setTheme(preferredTheme);
+
+            // Set up theme toggle button
+            const themeToggleButton = document.getElementById('theme-toggle-button');
+            if (themeToggleButton) {
+                themeToggleButton.addEventListener('click', () => {
+                    const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+                    setTheme(newTheme);
+                });
+            }
+            
+            // Initialize essay display area
+            const essayDisplayArea = document.getElementById('essay-display-area');
+            if (essayDisplayArea) {
+                essayDisplayArea.classList.add('loaded');
+            }
+        });
+    </script>
+</body>
+</html> 
