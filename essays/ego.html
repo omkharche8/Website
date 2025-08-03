@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ego</title>
+    <meta name="description" content="Exploring how successful people (especially outsiders) navigate through multiple verticals in life">
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        /* Basic styling for full-page essay display */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Roboto Mono', monospace;
+        }
+        .essay-container {
+            width: 100%;
+            min-height: 100vh;
+            box-sizing: border-box;
+            padding: 20px 40px;
+            overflow-y: auto;
+            background-color: var(--bg-color-light);
+        }
+        #essay-display-area h3.essay-date {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        #essay-display-area h2.essay-title-for-seo {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 0.25em;
+        }
+        #essay-display-area p.essay-summary-for-seo {
+            color: #555;
+            font-style: italic;
+            font-size: 1em;
+            margin-top: 0;
+            margin-bottom: 1.5em;
+        }
+        #essay-display-area .essay-text p {
+            line-height: 1.6;
+            margin-bottom: 1em;
+        }
+        #essay-display-area .essay-text h3 {
+            color: #444;
+            margin-top: 2em;
+            margin-bottom: 0.75em;
+            font-size: 1.2em;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .essay-container {
+                padding: 15px 20px;
+            }
+            #essay-display-area h3.essay-date {
+                font-size: 0.85em;
+            }
+        }
+
+        /* Go Back Button Styles */
+        .go-back-button {
+            position: fixed;
+            bottom: 30px;
+            left: 32px;
+            width: 40px;
+            height: 40px;
+            padding: 8px;
+            background-color: var(--bg-color-light);
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            font-family: 'Roboto Mono', monospace;
+            border: 1px solid var(--border-color-light, #ccc);
+            transition: background-color 0.2s;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            line-height: 1;
+        }
+
+        .go-back-button:hover {
+            background-color: var(--button-hover-bg-light);
+        }
+
+        /* Responsive adjustments for the go-back button */
+        @media (max-width: 700px) {
+            .go-back-button {
+                bottom: 20px;
+                left: 15px;
+                padding: 7px 12px;
+                font-size: 0.85em;
+            }
+        }
+
+        /* Dark Mode Overrides */
+        body.dark-mode {
+            color: var(--text-color-dark, #f0f0f0);
+        }
+        body.dark-mode .essay-container {
+            background-color: transparent !important;
+        }
+        body.dark-mode #essay-display-area h2.essay-title-for-seo {
+            color: var(--accent-color-dark, #70ab8a);
+        }
+        body.dark-mode #essay-display-area p.essay-summary-for-seo {
+            color: var(--accent-color-dark, #70ab8a);
+        }
+        body.dark-mode #essay-display-area h3.essay-date {
+            color: var(--accent-color-dark, #70ab8a);
+        }
+        body.dark-mode #essay-display-area .essay-text p {
+            color: var(--text-color-dark, #f0f0f0);
+        }
+        body.dark-mode #essay-display-area .essay-text h3 {
+            color: var(--accent-color-dark, #70ab8a);
+        }
+        body.dark-mode .go-back-button {
+            background-color: var(--sidebar-bg-dark);
+            color: var(--accent-color-dark, #70ab8a);
+            border: 1px solid var(--accent-color-dark, #70ab8a);
+        }
+        body.dark-mode .go-back-button:hover {
+            background-color: var(--button-hover-bg-dark);
+            color: var(--accent-color-dark, #70ab8a);
+            filter: brightness(1.1);
+        }
+
+        /* Styling for Theme Toggle Button */
+        #theme-toggle-button {
+            position: fixed;
+            bottom: 30px;
+            right: 32px;
+            left: auto;
+            width: 40px;
+            height: 40px;
+            padding: 8px;
+            background-color: var(--sidebar-bg-light);
+            border: 1px solid #aaa;
+            color: var(--link-color-light, #555);
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: background-color 0.2s, color 0.2s, border-color var(--theme-transition-duration, 0.3s) ease;
+        }
+
+        /* Responsive adjustments for theme toggle button */
+        @media (max-width: 700px) {
+            #theme-toggle-button {
+                bottom: 20px;
+                right: 15px;
+            }
+        }
+
+        #theme-toggle-button:hover {
+            background-color: var(--button-hover-bg-light, #f0f0f0);
+        }
+
+        #theme-toggle-button .theme-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Dark Mode Overrides for Theme Button */
+        body.dark-mode #theme-toggle-button {
+            background-color: var(--sidebar-bg-dark, #1e2022);
+            border: 1px solid var(--accent-color-dark, #70ab8a);
+            color: var(--link-color-dark, #70ab8a);
+        }
+
+        body.dark-mode #theme-toggle-button:hover {
+            background-color: var(--button-hover-bg-dark, #333);
+            color: var(--button-hover-text-dark, #70ab8a);
+        }
+
+        #essay-display-area {
+            opacity: 0;
+            transform: translateY(5px);
+            transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+        }
+
+        #essay-display-area.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div id="vanta-background"></div>
+    <div class="essay-container">
+        <div id="essay-display-area">
+            <h2 class="essay-title-for-seo">The Ego's Collapse</h2>
+            <h3 class="essay-date">3 August 2025</h3> 
+
+            <p class="essay-summary-for-seo">Understanding how ego/pride cycle works and figuring the way through it</p>
+
+            <div class="essay-text">
+                <p>Recently, My peers & I have been experiencing this. I have got thoughts on this</p>
+
+                <h3>Define Ego Cycle</h3>
+                <p>You are brought up in a certain way; everyone has a way of living. In this way of living, a few things are easily available and a few things become aspirational.
+                    <br>
+                    Now, as life progresses, you achieve one such 'aspirational' thing, feel you are on cloud nine, and forget that this 'aspirational' thing which you have achieved is someone else's piece of cake.
+                    <br>
+                    One day, the thing you worked so hard for is snatched away from you, and you are left with absolutely nothing in your eyes. This is because your entire personality was full of 'that achievement'.
+                    <br>
+                    You get humbled and start appreciating small and common things again until another 'aspirational' thing drops.
+                </p>
+
+                <br>
+                <p>Upbringing -> Goals Set -> Goal Achieved -> Ego Inflates -> Goal Lost -> Get Humbled -> Simple Appreciation -> New Goal -> (Cycle Repeats)</p>
+                
+                <h3>Thoughts on how not to fall prey to this</h3>
+                <p> My view has always been to look some time into the future (say, 5 years). Write down specifics about how your life should look; don't ignore the smaller aspects. Go as deep as you can to get closer to the reality of how things really function at that level.
+                    <br>
+                    Now, absorb what you have just written and search online. It's my guarantee that someone has already done it (a 99% chance). You'll feel better, as this proves it's possible and that you don't have unrealistic expectations. Now, understand his/her personality.
+                    <br> Look for the mistakes they have made in the past and how you can avoid something similar during your own tenure of work.
+                    <br> Start working toward it, but understand where you are coming from at all times.
+                    <br> While working toward it, you'll understand what the person you admire has been through, and you'll develop more compassion for him/her. 
+                    <br> Don't think that this was so easy. If it was, you have selected a bullshit goal. Go back to step one and choose something challenging, something that even you, in your reality, can't imagine doing.
+                </p>               
+                
+                <h3>Finally</h3>
+                <p>Don't ever feel you can do something casually where the 'reality' of the world is struggling. Compare all achievements to the baseline of the world. 
+                    <br>
+                    If you look at unsuccessful people, they are most probably unsuccessful because they took things lightly that could have made them successful.
+                    <br>
+                    I was really chill about a subject in a semester of my college, "Pass toh ho jaunga" (I'll obviously pass). I got a reFAT in that subject because of the Smart India Hackathon, and I then proceeded to fail that reFAT. So, shit happens.
+                    <br>
+                    Another peer I know got multiple reFATs rejected because of poor document uploads. The point was, this person's entire personality was about 'managing friendships' and doing things that didn't touch reality enough. This recent incident crushed that person's biggest 'ego'—their career, because they thought "Career toh ho jayega" (Career will happen, said in a casual manner).
+                    <br>
+                    So, sticking to reality will make your Ego curve and proceed rather than completing its cycle. Don't complete this cycle. Lead a good life. Be genuinely happy from within for any achievement and treat everyone with love. See you next month.
+                </p>
+                
+            </div>
+        </div>
+    </div>
+
+    <a href="../index.html#essays" class="go-back-button" aria-label="Go back to essays list">←</a>
+    <button id="theme-toggle-button" title="Toggle light/dark theme">Toggle Theme</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.fog.min.js"></script>
+    <script src="../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize theme
+            const preferredTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            setTheme(preferredTheme);
+
+            // Set up theme toggle button
+            const themeToggleButton = document.getElementById('theme-toggle-button');
+            if (themeToggleButton) {
+                themeToggleButton.addEventListener('click', () => {
+                    const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+                    setTheme(newTheme);
+                });
+            }
+            
+            // Initialize essay display area
+            const essayDisplayArea = document.getElementById('essay-display-area');
+            if (essayDisplayArea) {
+                essayDisplayArea.classList.add('loaded');
+            }
+        });
+    </script>
+</body>
+</html> 
