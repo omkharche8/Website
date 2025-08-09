@@ -935,9 +935,30 @@ body.arcade-mode .contact-link:hover {
 body.arcade-mode .content-box,
 body.arcade-mode .essay-container {
     background: var(--arcade-panel) !important;
+    border: none; /* neon border rendered via ::before inset */
+    box-shadow: none;
+    backdrop-filter: blur(4px) saturate(130%);
+}
+
+/* Inset neon border leaving a little space on all sides */
+body.arcade-mode .content-box::before,
+body.arcade-mode .essay-container::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
     border: 2px solid var(--arcade-border);
     box-shadow: var(--arcade-shadow);
-    backdrop-filter: blur(4px) saturate(130%);
+    pointer-events: none;
+}
+
+@media (max-width: 700px) {
+    body.arcade-mode .content-box::before,
+    body.arcade-mode .essay-container::before {
+        top: 10px; right: 10px; bottom: 10px; left: 10px;
+    }
 }
 
 /* In Arcade on non-essays, optional border removal (Pac-Man removed) */
