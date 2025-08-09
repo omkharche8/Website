@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
 :root {
     --bg-color-light: rgb(251, 246, 232);
     --text-color-light: #555;
@@ -20,6 +22,15 @@
     --button-hover-bg-dark: #333;
     --button-hover-text-dark: #70ab8a;
     --essay-date-color-dark: #aaa;
+
+    /* Arcade palette */
+    --arcade-neon-primary: #39ff14; /* neon green */
+    --arcade-neon-secondary: #ff2bd6; /* neon magenta */
+    --arcade-neon-accent: #00e5ff; /* neon cyan */
+    --arcade-bg-deep: #0a0b10; /* deep dark backdrop */
+    --arcade-panel: rgba(15, 18, 30, 0.65);
+    --arcade-border: rgba(57, 255, 20, 0.75);
+    --arcade-shadow: 0 0 12px rgba(57,255,20,0.55), 0 0 28px rgba(255,43,214,0.35);
 
     --theme-transition-duration: 0.2s;
 }
@@ -454,10 +465,6 @@ body.dark-mode .responsive-image-container img {
 
 /* Mobile Styles */
 @media (max-width: 700px) {
-    body {
-        /* padding-left: 0; Is already 0 from base */
-        /* overflow: hidden; /* Already set on main body */
-    }
     .main-wrapper {
         padding-left: 0; /* Remove sidebar padding */
         /* overflow-y: visible; /* If body is overflow:hidden, this won't make body scroll */
@@ -541,21 +548,16 @@ body.dark-mode .responsive-image-container img {
 
     #page-forbes .page-content,
     #page-contact .page-content {
-        /* text-align: left; /* Inherited from .page-content mobile */
-        text-align: center; /* MODIFIED: Ensure text content of children is centered */
+        text-align: center;
         align-self: stretch; 
         width: 100%; 
         margin: 0; 
-        /* padding-top: 15px; */ /* REMOVED to allow true centering */
-        padding-top: 30px; /* ADDED: Increased top padding for spacing */
-        /* padding-left: 0;  /* Covered by .page-content {padding:0;} general mobile rule */
-        /* padding-right: 0; /* Covered by .page-content {padding:0;} general mobile rule */
+        padding-top: 30px;
         display: flex;
         flex-direction: column;
-        /* justify-content: center; */ /* REMOVED: To avoid full vertical centering if not desired */
-        align-items: center;   /* Horizontal centering for the flex items */
+        align-items: center;
         flex-grow: 1; 
-        font-size: 1rem; /* Ensure this container also respects/sets the 1rem base */
+        font-size: 1rem;
     }
 
     #page-contact .contact-link { /* Explicitly set contact link font size for mobile */
@@ -577,9 +579,7 @@ body.dark-mode .responsive-image-container img {
         margin: 0;
         padding: 20px; /* Mobile padding for essay box */
     }
-    #essay-display-area {
-        /* padding-right: 0; /* No specific padding needed here if container handles it */
-    }
+    #essay-display-area { padding-left: 0; }
 
     /* Homepage Bullet Points Mobile Styles - container styling */
     .homepage-bullet-points {
@@ -639,9 +639,6 @@ body.dark-mode .responsive-image-container img {
 }
 
 /* Essay Headline List (index.html) */
-.page#page-essays .essays-page-content { /* This is a more specific selector for the essays list container */
-    /* padding-top: 10px; /* This was already specified in .essays-page-content, ensure no conflict */
-}
 
 ul.essay-headlines-list {
     list-style-type: none; 
@@ -757,9 +754,7 @@ body.dark-mode {
     color: var(--text-color-dark);
 }
 
-body.dark-mode .main-wrapper {
-    /* No background change needed, it remains transparent */
-}
+body.dark-mode .main-wrapper { background: transparent; }
 
 body.dark-mode .sidebar {
     background-color: transparent !important; /* Make sidebar transparent to show Vanta */
@@ -852,6 +847,283 @@ body.dark-mode #theme-toggle-button .theme-icon {
     stroke: var(--link-color-dark); /* If SVG uses stroke */
 }
 
+/* Arcade Toggle Button (fixed, sits above the theme toggle) */
+#arcade-toggle-button {
+    position: fixed;
+    bottom: 80px; /* above theme button which is 30px from bottom */
+    left: 32px;  /* default aligns with desktop theme button on index */
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    background-color: var(--sidebar-bg-light);
+    border: 1px solid var(--border-color-light);
+    color: var(--link-color-light);
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 102; /* above theme button */
+    transition: background-color var(--theme-transition-duration) ease, color var(--theme-transition-duration) ease, border-color var(--theme-transition-duration) ease, transform 0.2s ease;
+}
+
+#arcade-toggle-button:hover {
+    background-color: var(--button-hover-bg-light);
+    transform: translateY(-1px);
+}
+
+/* Mobile adjustment for arcade button */
+@media (max-width: 700px) {
+    #arcade-toggle-button {
+        bottom: 70px; /* 50px above theme button's 20px */
+        left: auto;
+        right: 15px; /* default mobile position mirrors theme button */
+    }
+    /* Essays view: ensure back button keeps dark-mode styling on mobile */
+    body.dark-mode .go-back-button {
+        background-color: var(--sidebar-bg-dark) !important;
+        color: var(--accent-color-dark, #70ab8a) !important;
+        border: 1px solid var(--accent-color-dark, #70ab8a) !important;
+    }
+}
+
+/* Hide arcade toggle entirely on essays views */
+body.has-essays-view #arcade-toggle-button { display: none !important; }
+
+/* Dark mode styling for arcade button to match theme button */
+body.dark-mode #arcade-toggle-button {
+    background-color: var(--sidebar-bg-dark);
+    border-color: var(--border-color-dark);
+    color: var(--link-color-dark);
+}
+body.dark-mode #arcade-toggle-button:hover {
+    background-color: var(--button-hover-bg-dark);
+}
+
+/* Arcade MODE global visuals */
+body.arcade-mode {
+    background-color: var(--arcade-bg-deep) !important;
+    color: var(--arcade-neon-primary);
+    font-family: 'VT323', 'Roboto Mono', monospace; /* retro terminal-like */
+}
+
+/* Swap key typographic accents to pixel font */
+body.arcade-mode .title,
+body.arcade-mode h1,
+body.arcade-mode h2,
+body.arcade-mode h3,
+body.arcade-mode .essay-date {
+    font-family: 'Press Start 2P', cursive;
+    letter-spacing: 0.02em;
+}
+
+/* Neon link styling */
+body.arcade-mode a,
+body.arcade-mode .link,
+body.arcade-mode .contact-link {
+    color: var(--arcade-neon-accent);
+    text-shadow: 0 0 6px rgba(0,229,255,0.8), 0 0 16px rgba(0,229,255,0.45);
+}
+body.arcade-mode a:hover,
+body.arcade-mode .link:hover,
+body.arcade-mode .contact-link:hover {
+    filter: brightness(1.2);
+    text-decoration: underline;
+}
+
+/* Panels and boxes neon chrome */
+body.arcade-mode .content-box,
+body.arcade-mode .essay-container {
+    background: var(--arcade-panel) !important;
+    border: 2px solid var(--arcade-border);
+    box-shadow: var(--arcade-shadow);
+    backdrop-filter: blur(4px) saturate(130%);
+}
+
+/* In Arcade on non-essays, optional border removal (Pac-Man removed) */
+/* body.arcade-mode:not(.has-essays-view) .content-box { border: 0 !important; box-shadow: none !important; } */
+
+/* Sidebar transparency; neon title */
+body.arcade-mode .sidebar {
+    background: transparent !important;
+}
+body.arcade-mode .title {
+    color: var(--arcade-neon-secondary);
+    text-shadow: 0 0 10px rgba(255,43,214,0.8), 0 0 30px rgba(255,43,214,0.5);
+}
+
+/* Essay list bullets & dates neon */
+body.arcade-mode ul.essay-headlines-list li::before {
+    color: var(--arcade-neon-primary);
+    text-shadow: 0 0 8px rgba(57,255,20,0.8);
+}
+body.arcade-mode ul.essay-headlines-list .essay-list-date {
+    color: var(--arcade-neon-secondary);
+}
+
+/* Search controls neon */
+body.arcade-mode .essay-search-controls {
+    background-color: rgba(10,11,16,0.55);
+    border: 1px solid var(--arcade-border);
+    box-shadow: var(--arcade-shadow);
+}
+body.arcade-mode #essay-search-input {
+    background-color: rgba(10,11,16,0.85);
+    border-color: var(--arcade-neon-accent);
+    color: var(--arcade-neon-accent);
+}
+body.arcade-mode .search-toggle-button,
+body.arcade-mode .search-nav-button {
+    color: var(--arcade-neon-primary);
+}
+
+/* Theme + Arcade buttons in arcade mode */
+body.arcade-mode #theme-toggle-button,
+body.arcade-mode #arcade-toggle-button {
+    background-color: rgba(10,11,16,0.65);
+    border-color: var(--arcade-neon-accent);
+    color: var(--arcade-neon-accent);
+    box-shadow: var(--arcade-shadow);
+}
+body.arcade-mode #theme-toggle-button:hover,
+body.arcade-mode #arcade-toggle-button:hover {
+    filter: brightness(1.1);
+}
+
+/* Hide theme toggle entirely in Arcade mode; reposition arcade button */
+body.arcade-mode #theme-toggle-button { display: none !important; }
+body.arcade-mode #arcade-toggle-button { bottom: 30px; }
+
+/* Neon highlight */
+body.arcade-mode .highlight {
+    text-decoration-color: var(--arcade-neon-secondary);
+}
+
+/* Animated arcade background + scanlines */
+body.arcade-mode #vanta-background {
+    background:
+      radial-gradient(1200px 600px at 20% 120%, rgba(0,229,255,0.08), transparent 60%),
+      radial-gradient(1000px 500px at 80% -20%, rgba(255,43,214,0.08), transparent 60%),
+      radial-gradient(900px 900px at 50% 50%, rgba(57,255,20,0.06), transparent 60%),
+      linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(10,11,16,0.9) 100%);
+    animation: arcadeGradientDrift 22s linear infinite;
+}
+
+@keyframes arcadeGradientDrift {
+    0% { background-position: 0 0, 0 0, 0 0, 0 0; }
+    50% { background-position: 30px 40px, -40px -60px, 20px -20px, 0 0; }
+    100% { background-position: 0 0, 0 0, 0 0, 0 0; }
+}
+
+/* Global scanlines overlay (non-blocking) */
+body.arcade-mode::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.03) 0px,
+      rgba(255,255,255,0.03) 1px,
+      transparent 3px,
+      transparent 5px
+    );
+    opacity: 0.25;
+    z-index: 5;
+    animation: scanlineFlicker 3s ease-in-out infinite;
+}
+
+@keyframes scanlineFlicker {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.3; }
+}
+
+/* Arcade Intro Overlay */
+#arcade-intro-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(800px 400px at 50% 50%, rgba(0,229,255,0.1), rgba(10,11,16,0.98) 60%);
+    overflow: hidden;
+}
+#arcade-intro-overlay .intro-scanlines {
+    position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.05) 0px,
+        rgba(255,255,255,0.05) 1px,
+        transparent 3px,
+        transparent 5px
+    );
+    mix-blend-mode: overlay;
+    animation: introScan 1.6s linear infinite;
+}
+@keyframes introScan { 0%{transform: translateY(-10px);} 100%{transform: translateY(10px);} }
+
+#arcade-intro-overlay .intro-content {
+    text-align: center;
+    color: var(--arcade-neon-primary);
+    font-family: 'Press Start 2P', cursive;
+    text-shadow: 0 0 12px rgba(57,255,20,0.85), 0 0 28px rgba(255,43,214,0.55);
+    animation: introPop 0.5s ease-out both;
+}
+@keyframes introPop { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+#arcade-intro-overlay .intro-title {
+    font-size: clamp(1.1rem, 3.5vw, 2rem);
+    margin-bottom: 14px;
+}
+#arcade-intro-overlay .intro-sub {
+    font-size: clamp(0.7rem, 2.5vw, 1.1rem);
+    color: var(--arcade-neon-accent);
+    margin-bottom: 18px;
+}
+#arcade-intro-overlay .intro-progress {
+    width: min(420px, 70vw);
+    height: 8px;
+    border: 1px solid var(--arcade-neon-accent);
+    box-shadow: var(--arcade-shadow);
+    background: rgba(10,11,16,0.6);
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 999px;
+}
+#arcade-intro-overlay .intro-progress .bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--arcade-neon-primary), var(--arcade-neon-secondary), var(--arcade-neon-accent));
+    animation: introLoad 1.8s ease-in-out forwards;
+}
+@keyframes introLoad { 0% { width: 0%; } 100% { width: 100%; } }
+
+/* Arcade Exit Overlay (faster) */
+#arcade-exit-overlay {
+    position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(700px 350px at 50% 50%, rgba(255,43,214,0.12), rgba(10,11,16,0.98) 60%);
+    overflow: hidden;
+}
+#arcade-exit-overlay .intro-content { text-align: center; color: var(--arcade-neon-secondary); font-family: 'Press Start 2P', cursive; text-shadow: 0 0 12px rgba(255,43,214,0.85), 0 0 28px rgba(0,229,255,0.55); animation: introPop 0.35s ease-out both; }
+#arcade-exit-overlay .intro-title { font-size: clamp(1rem, 3vw, 1.6rem); margin-bottom: 10px; }
+#arcade-exit-overlay .intro-sub { font-size: clamp(0.65rem, 2vw, 1rem); color: var(--arcade-neon-accent); margin-bottom: 14px; }
+#arcade-exit-overlay .intro-progress { width: min(380px, 65vw); height: 7px; border: 1px solid var(--arcade-neon-secondary); box-shadow: var(--arcade-shadow); background: rgba(10,11,16,0.6); margin: 0 auto; overflow: hidden; border-radius: 999px; }
+#arcade-exit-overlay .intro-progress .bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--arcade-neon-secondary), var(--arcade-neon-primary)); animation: introExitLoad 1.2s ease-in-out forwards; }
+@keyframes introExitLoad { 0% { width: 0%; } 100% { width: 100%; } }
+
+/* Pac-Man visuals removed per request */
+
+/* Pac-Man path animation using container size vars */
+@keyframes pac-run {
+    0%   { transform: translate(var(--m), var(--m)) rotate(0deg); }
+    25%  { transform: translate(calc(var(--m) + var(--w)), var(--m)) rotate(90deg); }
+    50%  { transform: translate(calc(var(--m) + var(--w)), calc(var(--m) + var(--h))) rotate(180deg); }
+    75%  { transform: translate(var(--m), calc(var(--m) + var(--h))) rotate(270deg); }
+    100% { transform: translate(var(--m), var(--m)) rotate(360deg); }
+}
+
+
 /* Specific Dark Mode Highlighting */
 body.dark-mode .highlight {
     text-decoration-color: var(--link-color-dark); /* Brighter underline for dark mode */
@@ -870,14 +1142,7 @@ body.dark-mode .homepage-bullet-points ul.essay-headlines-list a:hover {
 }
 
 /* Fallback for the .container class if it's still used from old HTML */
-.container { 
-    /* This class was in old CSS. If index.html doesn't use it, it's dead code. */
-    /* Assuming it might have been for an overall content wrapper. */
-    /* Given the current structure, .main-wrapper and .content-area handle this. */
-    /* For safety, if it was meant to constrain width: */
-    /* max-width: 1200px; /* Example */
-    /* margin: 0 auto; /* Example */
-}
+.container { max-width: 1200px; margin: 0 auto; }
 
 /* Remove duplicate/problematic rules explicitly if they existed from previous edits */
 /* The edit tool should replace the whole file, making manual cleanup of old rules less necessary, */
@@ -946,24 +1211,18 @@ body.dark-mode .homepage-bullet-points ul.essay-headlines-list a:hover {
     .essay-container { /* MODIFIED: from #essay-content-container to .essay-container */
         width: 100%;
         max-width: 100%;
-        height: 100%; 
+        height: 100%;
         margin: 0;
         padding: 20px; /* Mobile padding for essay box */
-        /* overflow: hidden; /* Ensure it's also hidden on mobile if needed, inherited if not specified */
+        background: var(--content-box-bg-light); /* ensure not transparent on mobile to avoid dark overlay look */
+        overflow: hidden; 
     }
-    #essay-display-area {
-        /* padding-right: 0; /* No specific padding needed here if container handles it */
-    }
+    #essay-display-area { padding-left: 0; background: transparent; }
 }
 
-body.dark-mode .essay-container { /* MODIFIED: from #essay-content-container to .essay-container */
-    background-color: transparent !important; /* Show Vanta */
-}
+body.dark-mode .essay-container { background-color: transparent !important; }
 
-body.dark-mode #essay-display-area {
-    /* background-color: var(--content-box-bg-dark); /* Match content box */
-    /* color: var(--text-color-dark); /* Ensure text color is correct */
-}
+body.dark-mode #essay-display-area { color: var(--text-color-dark); }
 
 /* Resetting and simplifying homepage bullet point styles */
 
