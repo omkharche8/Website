@@ -907,6 +907,11 @@ body.arcade-mode {
     font-family: 'VT323', 'Roboto Mono', monospace; /* retro terminal-like */
 }
 
+/* Keep 'Om Kharche' title a fixed size in Arcade mode across PC & Mobile */
+body.arcade-mode .title {
+    font-size: 1.5rem !important; /* fixed, no viewport-based scaling */
+}
+
 /* Swap key typographic accents to pixel font */
 body.arcade-mode .title,
 body.arcade-mode h1,
@@ -1018,6 +1023,43 @@ body.arcade-mode #arcade-toggle-button { bottom: 30px; }
 /* Neon highlight */
 body.arcade-mode .highlight {
     text-decoration-color: var(--arcade-neon-secondary);
+}
+
+/* Arcade Essays View: make neon border wrap full content with proper padding */
+/* Allow page-level scrolling on essays view in arcade mode so the container can grow with content */
+body.arcade-mode.has-essays-view {
+    overflow-y: auto !important;
+}
+
+/* Let the essay container size to its content (with a floor), and disable internal scrolling */
+body.arcade-mode.has-essays-view .essay-container {
+    width: 850px;
+    max-width: calc(100% - 48px);
+    margin: 24px auto;
+    height: auto !important;
+    min-height: calc(100vh - 48px);
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 24px; /* ensures smooth, even padding inside neon border */
+    position: relative; /* maintain for ::before border */
+}
+
+/* Ensure essay content isn't constrained; let it define container height */
+body.arcade-mode.has-essays-view #essay-display-area {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding-bottom: 0; /* rely on container padding for bottom spacing */
+}
+
+@media (max-width: 700px) {
+    body.arcade-mode.has-essays-view .essay-container {
+        width: 100%;
+        max-width: 100%;
+        margin: 0; /* edge-to-edge on mobile, neon inset provides breathing room */
+        padding: 20px; /* matches mobile comfort spacing */
+        min-height: 100vh; /* at least full screen */
+    }
 }
 
 /* Animated arcade background + scanlines */
