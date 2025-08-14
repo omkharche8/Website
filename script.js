@@ -20,6 +20,9 @@ const vantaFogSettings = {
     zoom: 1.05
 };
 
+// Site canonical origin (used for absolute canonical/og:url)
+const SITE_ORIGIN = "https://www.omkharche.com";
+
 // Global SVG Icons for Theme Toggle Button
 const moonIcon = `<svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
 const sunIcon = `<svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
@@ -45,6 +48,182 @@ function destroyVantaFog() {
         vantaEffect.destroy();
         vantaEffect = null;
     }
+}
+
+// --------------- SEO HELPERS (non-visual) ---------------
+function normalizePathname(pathname) {
+    if (!pathname) return '/';
+    return pathname === '/index.html' ? '/' : pathname;
+}
+
+function getCanonicalUrl() {
+    try {
+        const { pathname } = window.location;
+        return SITE_ORIGIN + normalizePathname(pathname);
+    } catch (e) {
+        return SITE_ORIGIN + '/';
+    }
+}
+
+function ensureCanonicalLink(url) {
+    const canonicalHref = url || getCanonicalUrl();
+    let link = document.querySelector('link[rel="canonical"]');
+    if (!link) {
+        link = document.createElement('link');
+        link.setAttribute('rel', 'canonical');
+        document.head.appendChild(link);
+    }
+    link.setAttribute('href', canonicalHref);
+}
+
+function ensureMetaByName(name) {
+    let tag = document.querySelector(`meta[name="${name}"]`);
+    if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute('name', name);
+        document.head.appendChild(tag);
+    }
+    return tag;
+}
+
+function ensureMetaByProperty(property) {
+    let tag = document.querySelector(`meta[property="${property}"]`);
+    if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute('property', property);
+        document.head.appendChild(tag);
+    }
+    return tag;
+}
+
+function setBasicSEOMeta(options) {
+    const {
+        title = document.title,
+        description = '',
+        type = 'website',
+        url = getCanonicalUrl(),
+        siteName = 'Om Kharche',
+        imageUrl = getProfileImageUrl()
+    } = options || {};
+
+    if (title) document.title = title;
+    if (description) {
+        const desc = ensureMetaByName('description');
+        desc.setAttribute('content', description);
+    }
+    ensureMetaByProperty('og:title').setAttribute('content', title);
+    ensureMetaByProperty('og:description').setAttribute('content', description);
+    ensureMetaByProperty('og:type').setAttribute('content', type);
+    ensureMetaByProperty('og:url').setAttribute('content', url);
+    ensureMetaByProperty('og:site_name').setAttribute('content', siteName);
+    ensureMetaByProperty('og:image').setAttribute('content', imageUrl);
+    ensureMetaByName('author').setAttribute('content', 'Om Kharche');
+    ensureMetaByName('twitter:card').setAttribute('content', 'summary');
+    ensureMetaByName('twitter:title').setAttribute('content', title);
+    ensureMetaByName('twitter:description').setAttribute('content', description);
+    ensureMetaByName('twitter:image').setAttribute('content', imageUrl);
+}
+
+function injectPersonJSONLD() {
+    if (document.getElementById('ld-person')) return;
+    const sameAs = [
+        'https://www.instagram.com/omkharche_/',
+        'https://x.com/omkharche_/'
+    ];
+    const data = {
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: 'Om Kharche',
+        url: getCanonicalUrl(),
+        sameAs
+    };
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'ld-person';
+    script.textContent = JSON.stringify(data);
+    document.head.appendChild(script);
+}
+
+function injectArticleJSONLD(article) {
+    if (!article || !article.headline) return;
+    let script = document.getElementById('ld-article');
+    const data = {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: article.headline,
+        description: article.description || '',
+        mainEntityOfPage: getCanonicalUrl(),
+        author: { '@type': 'Person', name: 'Om Kharche' }
+    };
+    if (article.datePublished) data.datePublished = article.datePublished;
+    if (!script) {
+        script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.id = 'ld-article';
+        document.head.appendChild(script);
+    }
+    script.textContent = JSON.stringify(data);
+}
+
+function injectWebsiteJSONLD() {
+    if (document.getElementById('ld-website')) return;
+    const data = {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        url: SITE_ORIGIN + '/',
+        name: 'Om Kharche'
+    };
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'ld-website';
+    script.textContent = JSON.stringify(data);
+    document.head.appendChild(script);
+}
+
+function getProfileImageUrl() {
+    return 'https://twitter.com/omkharche_/profile_image?size=original';
+}
+
+function parseDateToISO(dateText) {
+    if (!dateText) return '';
+    try {
+        // Attempt to parse flexible formats like "11 june 2025", "May 09, 2025 | MAA", "3 August 2025"
+        const cleaned = dateText
+            .replace(/\|.*$/, '')
+            .replace(/\b(PNQ|MAA)\b/gi, '')
+            .replace(/\s{2,}/g, ' ')
+            .trim();
+        const parsed = new Date(cleaned);
+        if (!isNaN(parsed.getTime())) return parsed.toISOString();
+    } catch (e) { }
+    return '';
+}
+
+function extractAndApplyEssaySEO() {
+    const container = document.getElementById('essay-display-area');
+    if (!container) return;
+    const titleEl = container.querySelector('h2.essay-title-for-seo');
+    const summaryEl = container.querySelector('p.essay-summary-for-seo');
+    const dateEl = container.querySelector('h3.essay-date');
+    const fallbackPara = container.querySelector('.essay-text p');
+    let title = titleEl && titleEl.textContent.trim();
+    let description = summaryEl && summaryEl.textContent.trim();
+    if (!title && fallbackPara) title = fallbackPara.textContent.trim().substring(0, 60) + '...';
+    if (!description && fallbackPara) description = fallbackPara.textContent.trim().substring(0, 160);
+    const isoDate = parseDateToISO(dateEl ? dateEl.textContent.trim() : '');
+    // Prefer canonical to loaded essay path if using essays.html?load=...
+    let canonicalUrl = getCanonicalUrl();
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const load = params.get('load');
+        if (load) {
+            const abs = new URL(load, window.location.href);
+            canonicalUrl = abs.origin + abs.pathname;
+        }
+    } catch (e) { }
+    ensureCanonicalLink(canonicalUrl);
+    setBasicSEOMeta({ title: title || document.title, description: description || '', type: 'article', url: canonicalUrl });
+    injectArticleJSONLD({ headline: title || document.title, description, datePublished: isoDate });
 }
 
 // Global Theme Setting Function
@@ -434,6 +613,28 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('has-essays-view');
     } else {
         document.body.classList.remove('has-essays-view');
+    }
+
+    // Global canonical + base OG/Twitter tags + Person JSON-LD
+    ensureCanonicalLink();
+    const defaultDescription = (document.querySelector('meta[name="description"]')?.getAttribute('content')) || 'Personal website and essays by Om Kharche.';
+    const pageType = document.getElementById('home-link') ? 'website' : (inEssaysView ? 'article' : 'website');
+    const urlNow = getCanonicalUrl();
+    setBasicSEOMeta({ title: document.title, description: defaultDescription, type: pageType, url: urlNow });
+    injectPersonJSONLD();
+    injectWebsiteJSONLD();
+
+    // If a static essay page already has its content in DOM, inject Article JSON-LD and tighten meta
+    if (inEssaysView) {
+        extractAndApplyEssaySEO();
+        // Observe dynamic content loads and re-apply SEO
+        const essayDisplayArea = document.getElementById('essay-display-area');
+        if (essayDisplayArea && 'MutationObserver' in window) {
+            const observer = new MutationObserver(() => {
+                extractAndApplyEssaySEO();
+            });
+            observer.observe(essayDisplayArea, { childList: true, subtree: true });
+        }
     }
 
     // Insert Arcade toggle and initialize state
