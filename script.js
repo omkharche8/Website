@@ -251,11 +251,17 @@ function setArcadeMode(enable, withIntro = true) {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (enable) {
+        // Store current theme before entering arcade mode
+        const currentTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+        localStorage.setItem('previousTheme', currentTheme);
+
         document.body.classList.add('arcade-mode');
-        // Ensure classic themes are not visually active
+        // Remove classic theme classes to prevent conflicts
         document.body.classList.remove('dark-mode');
         localStorage.setItem('arcadeMode', 'on');
         if (arcadeToggleButton) arcadeToggleButton.innerHTML = arcadeExitIcon;
+
+        // Destroy Vanta effect when entering arcade mode
         if (typeof destroyVantaFog === 'function') destroyVantaFog();
 
         if (withIntro && !prefersReducedMotion) {
@@ -268,14 +274,24 @@ function setArcadeMode(enable, withIntro = true) {
             themeToggleButton.setAttribute('aria-hidden', 'true');
             themeToggleButton.setAttribute('tabindex', '-1');
         }
+
+        // Ensure proper arcade mode CSS initialization
+        ensureArcadeModeCSS();
+
+        // Add a small delay to ensure CSS transitions are properly applied
+        setTimeout(() => {
+            ensureArcadeModeCSS();
+        }, 50);
+
         // Pac-Man feature removed
     } else {
         document.body.classList.remove('arcade-mode');
         localStorage.setItem('arcadeMode', 'off');
         if (arcadeToggleButton) arcadeToggleButton.innerHTML = arcadeIcon;
-        // Restore user's theme fully (class + Vanta)
-        const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        if (typeof setTheme === 'function') setTheme(currentTheme);
+
+        // Restore user's previous theme fully (class + Vanta)
+        const previousTheme = localStorage.getItem('previousTheme') || localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        if (typeof setTheme === 'function') setTheme(previousTheme);
 
         // Re-enable theme toggle
         const themeToggleButton = document.getElementById('theme-toggle-button');
@@ -317,6 +333,60 @@ function showArcadeIntroOverlay() {
     };
     // Remove after progress completes
     setTimeout(remove, 1950);
+}
+
+// Ensure proper arcade mode CSS variable initialization
+function ensureArcadeModeCSS() {
+    // Force a reflow to ensure CSS variables are properly applied
+    document.body.offsetHeight;
+
+    // Ensure arcade mode specific styles are loaded
+    const style = document.createElement('style');
+    style.id = 'arcade-mode-css-ensure';
+    style.textContent = `
+        body.arcade-mode {
+            background-color: var(--arcade-bg-deep) !important;
+            color: var(--arcade-neon-primary) !important;
+        }
+        body.arcade-mode .content-box,
+        body.arcade-mode .essay-container {
+            background: var(--arcade-panel) !important;
+        }
+        body.arcade-mode .essay-text p {
+            color: var(--arcade-neon-primary) !important;
+            text-shadow: 0 0 4px rgba(57,255,20,0.6);
+        }
+        body.arcade-mode .essay-text h3 {
+            color: var(--arcade-neon-secondary) !important;
+            text-shadow: 0 0 6px rgba(255,43,214,0.7);
+        }
+        body.arcade-mode .essay-date {
+            color: var(--arcade-neon-accent) !important;
+            text-shadow: 0 0 5px rgba(0,229,255,0.7);
+        }
+        body.arcade-mode .essay-title-main,
+        body.arcade-mode .essay-title-section {
+            color: var(--arcade-neon-secondary) !important;
+            text-shadow: 0 0 8px rgba(255,43,214,0.8);
+        }
+        body.arcade-mode .custom-text {
+            color: var(--arcade-neon-accent) !important;
+            text-shadow: 0 0 5px rgba(0,229,255,0.7);
+        }
+        body.arcade-mode .binary-shoes-link {
+            color: var(--arcade-neon-accent) !important;
+            text-decoration-color: var(--arcade-neon-secondary) !important;
+            text-shadow: 0 0 6px rgba(0,229,255,0.8), 0 0 16px rgba(0,229,255,0.45) !important;
+        }
+    `;
+
+    // Remove any existing style to prevent duplicates
+    const existingStyle = document.getElementById('arcade-mode-css-ensure');
+    if (existingStyle) {
+        existingStyle.remove();
+    }
+
+    document.head.appendChild(style);
 }
 
 function showArcadeExitOverlay() {
@@ -641,6 +711,11 @@ document.addEventListener('DOMContentLoaded', () => {
     insertArcadeToggleButton();
     const savedArcade = localStorage.getItem('arcadeMode') === 'on';
     setArcadeMode(savedArcade, false);
+
+    // Ensure arcade mode CSS is properly initialized if already active
+    if (savedArcade) {
+        ensureArcadeModeCSS();
+    }
 
     // Pac-Man feature removed
 });

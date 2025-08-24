@@ -637,15 +637,6 @@ body.dark-mode .responsive-image-container img {
         color: var(--text-color-dark);
     }
 
-    /* Dark mode for homepage bullet points - Match essay list headlines */
-    body.dark-mode .homepage-bullet-points li a {
-        color: var(--link-color-dark);
-    }
-
-    body.dark-mode .homepage-bullet-points li::before {
-        color: var(--text-color-dark); /* EXACT MATCH: Essay list bullet color in dark mode */
-    }
-
     body.dark-mode .contact-link {
         color: var(--link-color-dark);
     }
@@ -1207,18 +1198,41 @@ body.dark-mode .highlight {
 }
 
 /* Override hover effect for homepage bullet points (which use .essay-headlines-list) */
-.homepage-bullet-points ul.essay-headlines-list a:hover {
-    text-decoration: none; /* Remove underline */
-}
-
-body.dark-mode .homepage-bullet-points ul.essay-headlines-list a:hover {
-    text-decoration: none; /* Remove underline in dark mode too */
-    /* If the brightness filter is also from the main essay list hover, and you want to remove it: */
-    /* filter: none; */ 
-}
+/* These rules are now handled by the main .essay-headlines-list styles */
 
 /* Fallback for the .container class if it's still used from old HTML */
 .container { max-width: 1200px; margin: 0 auto; }
+
+/* Binary.shoes link styling for all themes */
+.binary-shoes-link {
+    color: var(--link-color-light);
+    text-decoration: underline;
+    text-decoration-color: rgba(85, 85, 85, 0.5);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: opacity 0.2s ease;
+}
+
+.binary-shoes-link:hover {
+    opacity: 0.7;
+}
+
+/* Dark mode styling for binary.shoes link - binary.shoes should be white */
+body.dark-mode .binary-shoes-link {
+    color: #ffffff;
+    text-decoration-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Arcade mode styling for binary.shoes link - use neon cyan for consistency */
+body.arcade-mode .binary-shoes-link {
+    color: var(--arcade-neon-accent);
+    text-decoration-color: var(--arcade-neon-secondary);
+    text-shadow: 0 0 6px rgba(0,229,255,0.8), 0 0 16px rgba(0,229,255,0.45);
+}
+
+body.arcade-mode .binary-shoes-link:hover {
+    filter: brightness(1.2);
+}
 
 /* Remove duplicate/problematic rules explicitly if they existed from previous edits */
 /* The edit tool should replace the whole file, making manual cleanup of old rules less necessary, */
@@ -1324,6 +1338,20 @@ body.dark-mode #essay-display-area { color: var(--text-color-dark); }
 /* ALL OTHER STYLES for the list itself (ul.essay-headlines-list, li, a, li::before) */
 /* will now come from the existing .essay-headlines-list rules in this file. */
 
+/* Homepage bullet points specific styling for non-linked text */
+.homepage-bullet-points li {
+    color: var(--text-color-light);
+    transition: color var(--theme-transition-duration) ease;
+}
+
+body.dark-mode .homepage-bullet-points li {
+    color: var(--link-color-dark);
+}
+
+body.arcade-mode .homepage-bullet-points li {
+    color: var(--arcade-neon-primary);
+}
+
 /* Ensure to manually delete any other .homepage-bullet-points child rules found elsewhere in the file. */
 
 /* ... rest of styles.css file from .highlight or other known good section onwards ... */ 
@@ -1341,3 +1369,33 @@ body.dark-mode #essay-display-area { color: var(--text-color-dark); }
 }
 
 /* ... continue with the rest of the original file ... */
+
+/* Arcade mode for essay text content */
+body.arcade-mode .essay-text p {
+    color: var(--arcade-neon-primary) !important;
+    text-shadow: 0 0 4px rgba(57,255,20,0.6);
+}
+
+body.arcade-mode .essay-text h3 {
+    color: var(--arcade-neon-secondary) !important;
+    text-shadow: 0 0 6px rgba(255,43,214,0.7);
+}
+
+body.arcade-mode .essay-date {
+    color: var(--arcade-neon-accent) !important;
+    text-shadow: 0 0 5px rgba(0,229,255,0.7);
+}
+
+/* Ensure essay titles render properly in arcade mode */
+body.arcade-mode .essay-title-main,
+body.arcade-mode .essay-title-section {
+    color: var(--arcade-neon-secondary) !important;
+    text-shadow: 0 0 8px rgba(255,43,214,0.8);
+}
+
+body.arcade-mode .custom-text {
+    color: var(--arcade-neon-accent) !important;
+    text-shadow: 0 0 5px rgba(0,229,255,0.7);
+}
+
+/* Arcade Intro Overlay */
