@@ -718,4 +718,85 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Pac-Man feature removed
+
+    // ===== Minimal Custom Cursor Initialization =====
+    initCustomCursor();
 });
+
+// ===== Custom Cursor Logic =====
+function initCustomCursor() {
+    if (!window.matchMedia || !window.matchMedia('(pointer:fine)').matches) return;
+    // Avoid duplicate
+    if (document.querySelector('.cursor-dot') || document.querySelector('.cursor-ring')) return;
+
+    const dot = document.createElement('div');
+    dot.className = 'cursor-dot';
+    const ring = document.createElement('div');
+    ring.className = 'cursor-ring';
+    document.body.appendChild(dot);
+    document.body.appendChild(ring);
+
+    document.body.classList.add('has-custom-cursor');
+
+    let mouseX = 0, mouseY = 0;
+    let ringX = 0, ringY = 0;
+    const ringLerp = 0.18; // smoothness for ring
+
+    function onMouseMove(e) {
+        mouseX = e.clientX; mouseY = e.clientY;
+        dot.style.left = mouseX + 'px';
+        dot.style.top = mouseY + 'px';
+        document.body.classList.add('cursor-visible');
+    }
+
+    function animate() {
+        ringX += (mouseX - ringX) * ringLerp;
+        ringY += (mouseY - ringY) * ringLerp;
+        ring.style.left = ringX + 'px';
+        ring.style.top = ringY + 'px';
+        requestAnimationFrame(animate);
+    }
+
+    function onMouseEnter() {
+        document.body.classList.add('cursor-visible');
+    }
+    function onMouseLeave() {
+        document.body.classList.remove('cursor-visible');
+    }
+    function onMouseDown() {
+        document.body.classList.add('cursor-active');
+    }
+    function onMouseUp() {
+        document.body.classList.remove('cursor-active');
+    }
+
+    // Hover state over interactive elements
+    function updateHoverState(target) {
+        const isInteractive = !!target && (
+            target.closest('a, button, [role="button"], input, textarea, select, summary, label, .link, .contact-link')
+        );
+        const isText = !!target && (
+            target.closest('input[type="text"], input[type="search"], textarea, [contenteditable="true"]')
+        );
+        if (isInteractive) document.body.classList.add('cursor-hover'); else document.body.classList.remove('cursor-hover');
+        if (isText) document.body.classList.add('cursor-text'); else document.body.classList.remove('cursor-text');
+    }
+
+    window.addEventListener('mousemove', (e) => { onMouseMove(e); updateHoverState(e.target); }, { passive: true });
+    window.addEventListener('mouseenter', onMouseEnter, { passive: true });
+    window.addEventListener('mouseleave', onMouseLeave, { passive: true });
+    window.addEventListener('mousedown', onMouseDown, { passive: true });
+    window.addEventListener('mouseup', onMouseUp, { passive: true });
+
+    // When theme or arcade mode toggles, nothing extra is needed; CSS handles colors.
+    // However, ensure cursor remains above transient overlays by re-appending to body on visibility changes.
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            if (dot.parentNode !== document.body) document.body.appendChild(dot);
+            if (ring.parentNode !== document.body) document.body.appendChild(ring);
+        }
+    });
+
+    // Kick animation loop
+    animate();
+}

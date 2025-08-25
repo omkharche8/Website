@@ -1475,3 +1475,92 @@ body.arcade-mode .custom-text {
 }
 
 /* Arcade Intro Overlay */
+
+/* ===== Custom Cursor (minimal, theme-aware) ===== */
+@media (pointer: fine) {
+    /* Hide OS cursor only when custom cursor is active */
+    body.has-custom-cursor { cursor: none; }
+
+    .cursor-dot,
+    .cursor-ring {
+        position: fixed;
+        left: 0;
+        top: 0;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 10050; /* Above content and overlays */
+        opacity: 0; /* shown via .cursor-visible */
+        transition: opacity 0.2s ease;
+    }
+
+    .cursor-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: #555; /* light default */
+        box-shadow: none;
+    }
+
+    .cursor-ring {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 1px solid rgba(0,0,0,0.35); /* light default */
+        transition: opacity 0.2s ease, transform 0.12s ease, border-color var(--theme-transition-duration) ease, box-shadow 0.2s ease;
+        box-shadow: none;
+    }
+
+    /* Visibility + interaction states */
+    body.cursor-visible .cursor-dot,
+    body.cursor-visible .cursor-ring { opacity: 1; }
+
+    body.cursor-hover .cursor-ring {
+        transform: translate(-50%, -50%) scale(1.5);
+    }
+
+    body.cursor-active .cursor-ring {
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+
+    /* Hide custom cursor when interacting with text inputs for proper I-beam */
+    body.cursor-text .cursor-dot,
+    body.cursor-text .cursor-ring { opacity: 0; }
+
+    /* Ensure native I-beam shows in text fields even when body hides cursor */
+    body.has-custom-cursor input,
+    body.has-custom-cursor textarea,
+    body.has-custom-cursor select,
+    body.has-custom-cursor [contenteditable="true"] { cursor: text; }
+
+    /* Theme adaptations */
+    /* Light */
+    body:not(.dark-mode):not(.arcade-mode) .cursor-dot { background-color: #555; }
+    body:not(.dark-mode):not(.arcade-mode) .cursor-ring { border-color: rgba(0,0,0,0.35); }
+    body:not(.dark-mode):not(.arcade-mode).cursor-hover .cursor-dot { background-color: #000; }
+    body:not(.dark-mode):not(.arcade-mode).cursor-hover .cursor-ring { border-color: #000; }
+
+    /* Dark */
+    body.dark-mode .cursor-dot { background-color: var(--text-color-dark); }
+    body.dark-mode .cursor-ring { border-color: rgba(255,255,255,0.35); }
+    body.dark-mode.cursor-hover .cursor-dot { background-color: var(--link-color-dark); }
+    body.dark-mode.cursor-hover .cursor-ring { border-color: var(--link-color-dark); }
+
+    /* Arcade */
+    body.arcade-mode .cursor-dot {
+        background-color: var(--arcade-neon-accent);
+        box-shadow: 0 0 6px rgba(0,229,255,0.8);
+    }
+    body.arcade-mode .cursor-ring {
+        border-color: var(--arcade-neon-primary);
+        box-shadow: 0 0 8px rgba(57,255,20,0.6), 0 0 14px rgba(0,229,255,0.4);
+    }
+    body.arcade-mode.cursor-hover .cursor-ring {
+        border-color: var(--arcade-neon-secondary);
+        box-shadow: 0 0 10px rgba(255,43,214,0.7), 0 0 18px rgba(0,229,255,0.5);
+    }
+
+    /* Reduced motion: snap rather than animate ring scale */
+    @media (prefers-reduced-motion: reduce) {
+        .cursor-ring { transition: opacity 0.01s linear, transform 0.01s linear, border-color var(--theme-transition-duration) ease, box-shadow 0.01s linear; }
+    }
+}
