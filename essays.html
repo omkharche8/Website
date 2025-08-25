@@ -6,6 +6,26 @@
     <meta name="robots" content="index, follow">
     <title>Essay</title>
     <link rel="stylesheet" href="styles.css">
+    <script>
+        // Apply saved theme and arcade classes ASAP to avoid FOUC
+        (function(){
+            try {
+                var savedArcade = localStorage.getItem('arcadeMode') === 'on';
+                var savedTheme = localStorage.getItem('theme');
+                if (savedArcade) {
+                    document.documentElement.classList.remove('dark-mode');
+                    document.body.classList.add('arcade-mode');
+                } else {
+                    document.body.classList.remove('arcade-mode');
+                    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                        document.body.classList.add('dark-mode');
+                    } else {
+                        document.body.classList.remove('dark-mode');
+                    }
+                }
+            } catch(e){}
+        })();
+    </script>
     <link rel="canonical" href="https://www.omkharche.com/essays.html">
     <meta property="og:title" content="Essay">
     <meta property="og:description" content="An essay by Om Kharche.">

@@ -1462,6 +1462,27 @@ body.arcade-mode .essay-date {
     text-shadow: 0 0 5px rgba(0,229,255,0.7);
 }
 
+/* Arcade: essay SEO title and summary on essay pages */
+body.arcade-mode #essay-display-area h2.essay-title-for-seo {
+    color: var(--arcade-neon-secondary) !important;
+    text-shadow: 0 0 8px rgba(255,43,214,0.8);
+}
+body.arcade-mode #essay-display-area p.essay-summary-for-seo {
+    color: var(--arcade-neon-accent) !important;
+    text-shadow: 0 0 5px rgba(0,229,255,0.7);
+}
+
+/* Arcade: Back button on essay pages */
+body.arcade-mode .go-back-button {
+    background-color: rgba(10,11,16,0.65) !important;
+    border: 1px solid var(--arcade-neon-accent) !important;
+    color: var(--arcade-neon-accent) !important;
+    box-shadow: var(--arcade-shadow);
+}
+body.arcade-mode .go-back-button:hover {
+    filter: brightness(1.1);
+}
+
 /* Ensure essay titles render properly in arcade mode */
 body.arcade-mode .essay-title-main,
 body.arcade-mode .essay-title-section {
@@ -1478,8 +1499,8 @@ body.arcade-mode .custom-text {
 
 /* ===== Custom Cursor (minimal, theme-aware) ===== */
 @media (pointer: fine) {
-    /* Hide OS cursor only when custom cursor is active */
-    body.has-custom-cursor { cursor: none; }
+    /* Hide OS cursor globally when custom cursor is active */
+    body.has-custom-cursor, body.has-custom-cursor * { cursor: none !important; }
 
     .cursor-dot,
     .cursor-ring {
@@ -1522,15 +1543,9 @@ body.arcade-mode .custom-text {
         transform: translate(-50%, -50%) scale(0.9);
     }
 
-    /* Hide custom cursor when interacting with text inputs for proper I-beam */
+    /* Keep custom cursor visible even over text inputs */
     body.cursor-text .cursor-dot,
-    body.cursor-text .cursor-ring { opacity: 0; }
-
-    /* Ensure native I-beam shows in text fields even when body hides cursor */
-    body.has-custom-cursor input,
-    body.has-custom-cursor textarea,
-    body.has-custom-cursor select,
-    body.has-custom-cursor [contenteditable="true"] { cursor: text; }
+    body.cursor-text .cursor-ring { opacity: 1; }
 
     /* Theme adaptations */
     /* Light */

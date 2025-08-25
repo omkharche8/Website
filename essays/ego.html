@@ -7,6 +7,26 @@
     <title>Ego</title>
     <meta name="description" content="Exploring how successful people (especially outsiders) navigate through multiple verticals in life">
     <link rel="stylesheet" href="../styles.css">
+    <script>
+        // Apply saved theme and arcade classes ASAP to avoid FOUC
+        (function(){
+            try {
+                var savedArcade = localStorage.getItem('arcadeMode') === 'on';
+                var savedTheme = localStorage.getItem('theme');
+                if (savedArcade) {
+                    document.documentElement.classList.remove('dark-mode');
+                    document.body.classList.add('arcade-mode');
+                } else {
+                    document.body.classList.remove('arcade-mode');
+                    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                        document.body.classList.add('dark-mode');
+                    } else {
+                        document.body.classList.remove('dark-mode');
+                    }
+                }
+            } catch(e){}
+        })();
+    </script>
     <link rel="canonical" href="https://www.omkharche.com/essays/ego.html">
     <meta property="og:title" content="The Ego's Collapse">
     <meta property="og:description" content="Understanding how ego/pride cycle works and figuring the way through it">
@@ -257,31 +277,29 @@
     </div>
 
     <a href="../index.html#essays" class="go-back-button" aria-label="Go back to essays list">←</a>
-    <button id="theme-toggle-button" title="Toggle light/dark theme">Toggle Theme</button>
+    <button id="theme-toggle-button" title="Toggle light/dark theme"><!-- Icon added by global JS --></button>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.fog.min.js"></script>
     <script src="../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize theme
-            const preferredTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-            setTheme(preferredTheme);
+            // Rely on global script.js setTheme and arcade state already applied.
+            const savedTheme = localStorage.getItem('theme');
+            if (typeof setTheme === 'function' && !document.body.classList.contains('arcade-mode')) {
+                setTheme(savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+            }
 
-            // Set up theme toggle button
             const themeToggleButton = document.getElementById('theme-toggle-button');
             if (themeToggleButton) {
                 themeToggleButton.addEventListener('click', () => {
                     const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
-                    setTheme(newTheme);
+                    if (typeof setTheme === 'function') setTheme(newTheme);
                 });
             }
-            
-            // Initialize essay display area
+
             const essayDisplayArea = document.getElementById('essay-display-area');
-            if (essayDisplayArea) {
-                essayDisplayArea.classList.add('loaded');
-            }
+            if (essayDisplayArea) essayDisplayArea.classList.add('loaded');
         });
     </script>
 </body>
