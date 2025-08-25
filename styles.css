@@ -1234,6 +1234,82 @@ body.arcade-mode .binary-shoes-link:hover {
     filter: brightness(1.2);
 }
 
+/* Enhanced visual cue for binary.shoes: animated underline + blinking pixel */
+.binary-shoes-link {
+    position: relative;
+}
+
+/* Animated underline (base + hover fill) */
+.binary-shoes-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 2px;
+    width: 0%;
+    background: linear-gradient(90deg, rgba(85,85,85,0.9), rgba(85,85,85,0.15));
+    transition: width 0.35s ease;
+    pointer-events: none;
+}
+
+.binary-shoes-link:hover::after {
+    width: 100%;
+}
+
+/* Blinking pixel marker at the end of the link */
+.binary-shoes-link::before {
+    content: '';
+    position: absolute;
+    top: 0.15em;
+    right: -10px;
+    width: 6px;
+    height: 6px;
+    border-radius: 1px;
+    background: currentColor;
+    opacity: 0.7;
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+    animation: blinkDot 2.2s ease-in-out infinite;
+}
+
+@keyframes blinkDot {
+    0%, 20% { opacity: 0.15; transform: translateY(0); }
+    30% { opacity: 0.8; transform: translateY(-0.5px); }
+    50% { opacity: 0.4; transform: translateY(0); }
+    70% { opacity: 0.9; transform: translateY(-0.5px); }
+    100% { opacity: 0.2; transform: translateY(0); }
+}
+
+/* Dark mode: brighter underline sweep */
+body.dark-mode .binary-shoes-link::after {
+    background: linear-gradient(90deg, rgba(255,255,255,1), rgba(255,255,255,0.2));
+}
+
+/* Arcade mode: always-on neon underline with subtle flicker */
+@keyframes neonUnderlineDrift {
+    0% { background-position: 0 0; }
+    100% { background-position: 200% 0; }
+}
+body.arcade-mode .binary-shoes-link::after {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--arcade-neon-accent), var(--arcade-neon-secondary), var(--arcade-neon-accent));
+    background-size: 200% 100%;
+    animation: neonUnderlineDrift 3.2s linear infinite;
+    box-shadow: 0 0 6px rgba(0,229,255,0.7), 0 0 14px rgba(255,43,214,0.35);
+}
+
+/* Arcade pixel gains glow */
+body.arcade-mode .binary-shoes-link::before {
+    box-shadow: 0 0 6px rgba(0,229,255,0.9), 0 0 14px rgba(255,43,214,0.5);
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .binary-shoes-link::after { transition: width 0.01s linear; animation: none; }
+    .binary-shoes-link::before { animation: none; }
+}
+
 /* Remove duplicate/problematic rules explicitly if they existed from previous edits */
 /* The edit tool should replace the whole file, making manual cleanup of old rules less necessary, */
 /* but this comment serves as a reminder of what was fixed. */
